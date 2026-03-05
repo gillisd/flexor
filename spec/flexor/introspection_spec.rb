@@ -37,7 +37,7 @@ RSpec.describe Flexor do
     subject { described_class.new }
 
     it "returns true for any method name" do
-      expect(subject.respond_to_missing?(:anything)).to be true
+      expect(subject.send(:respond_to_missing?, :anything)).to be true
     end
   end
 end

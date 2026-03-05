@@ -121,11 +121,10 @@ RSpec.describe Flexor do
 
       it "matches against nil when property is unset" do
         store = described_class.new
-        matched = case store.missing
-                  when nil then true
-                  else false
-                  end
-        expect(matched).to be true
+        # NilClass#=== checks identity, not nil?, so case/when nil
+        # won't match a nil-like Flexor. Use == nil or nil? instead.
+        expect(store.missing.nil?).to be true
+        expect(store.missing == nil).to be true # rubocop:disable Style/NilComparison
       end
     end
   end

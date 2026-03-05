@@ -42,6 +42,10 @@ class Flexor
       .then { new it }
   end
 
+  def self.===(other)
+    other.is_a?(self)
+  end
+
   def initialize(hash = {}, root: true)
     raise ArgumentError, "expected a Hash, got #{hash.class}" unless hash.is_a?(Hash)
 
@@ -95,8 +99,7 @@ class Flexor
     @store.inspect
   end
 
-  def deconstruct
-  end
+  def deconstruct; end
 
   def deconstruct_keys(keys)
     return @store if keys.nil?
@@ -133,20 +136,20 @@ class Flexor
   end
   alias has_key? key?
 
-  def each(&block)
-    @store.each(&block)
+  def each(&)
+    @store.each(&)
   end
 
-  def each_key(&block)
-    @store.each_key(&block)
+  def each_key(&)
+    @store.each_key(&)
   end
 
-  def map(&block)
-    @store.map(&block)
+  def map(&)
+    @store.map(&)
   end
 
-  def select(&block)
-    @store.select(&block)
+  def select(&)
+    @store.select(&)
   end
 
   def ==(other)
@@ -162,8 +165,8 @@ class Flexor
     other.nil? ? nil? : super
   end
 
-  def self.===(other)
-    other.is_a?(self)
+  def respond_to_missing?(_name, _include_private = false)
+    true
   end
 
   private
@@ -189,9 +192,5 @@ class Flexor
     else
       super
     end
-  end
-
-  def respond_to_missing?(_name, _include_private = false)
-    true
   end
 end
