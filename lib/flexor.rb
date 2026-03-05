@@ -75,11 +75,9 @@ class Flexor
   end
 
   def deconstruct
-    binding.debugger
   end
 
   def deconstruct_keys(*keys)
-    binding.debugger
     return @store if keys.nil? || keys.empty?
 
     keys = @store.keys
@@ -99,11 +97,9 @@ class Flexor
   end
 
   def ===(other)
-    binding.debugger
   end
 
   def self.===(other)
-    binding.debugger
   end
 
   private
