@@ -220,7 +220,7 @@ class Flexor
     end
   end
 
-  def method_missing(name, *args, &block) # rubocop:disable Metrics/CyclomaticComplexity
+  def method_missing(name, *args, &block) # rubocop:disable Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
     return super if block
 
     case [name, args]
@@ -233,7 +233,7 @@ class Flexor
       end
       self[key] = arg
     in _, []
-      unless frozen?
+      if !frozen? && @store.key?(name)
         define_singleton_method(name) do |*a, &blk|
           raise NoMethodError, "undefined method '#{name}' for #{inspect}" if blk || !a.empty?
 
