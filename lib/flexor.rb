@@ -158,6 +158,22 @@ class Flexor
     @store.select(&)
   end
 
+  def merge!(other)
+    other = other.to_h if other.is_a?(Flexor)
+    other.each do |key, value|
+      if value.is_a?(Hash) && self[key].is_a?(Flexor) && !self[key].nil?
+        self[key].merge!(value)
+      else
+        self[key] = value
+      end
+    end
+    self
+  end
+
+  def merge(other)
+    dup.merge!(other)
+  end
+
   def ==(other)
     case other
     in nil then nil?

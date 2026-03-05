@@ -43,7 +43,7 @@ RSpec.describe Flexor do
     it "replaces a scalar with a nested hash" do
       a = described_class.new({ x: "flat" })
       b = a.merge({ x: { nested: true } })
-      expect(b.x.nested).to eq true
+      expect(b.x.nested).to be true
     end
 
     it "accepts a Flexor as argument" do
@@ -64,7 +64,7 @@ RSpec.describe Flexor do
   describe "#merge!" do
     it "modifies the receiver in place" do
       a = described_class.new({ x: 1 })
-      a.merge!({ y: 2 })
+      a.merge!({ y: 2 }) # rubocop:disable Performance/RedundantMerge
       expect(a.to_h).to eq({ x: 1, y: 2 })
     end
 
@@ -76,7 +76,7 @@ RSpec.describe Flexor do
 
     it "deep merges nested hashes in place" do
       a = described_class.new({ db: { host: "localhost", port: 5432 } })
-      a.merge!({ db: { port: 3306 } })
+      a.merge!({ db: { port: 3306 } }) # rubocop:disable Performance/RedundantMerge
       expect(a.db.host).to eq "localhost"
       expect(a.db.port).to eq 3306
     end
