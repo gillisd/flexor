@@ -68,7 +68,7 @@ class Flexor
 
   def inspect
     return @store.inspect if @root
-    return nil if @store.empty?
+    return nil.inspect if @store.empty?
 
     @store.inspect
   end
