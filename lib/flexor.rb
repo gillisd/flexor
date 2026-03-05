@@ -63,7 +63,7 @@ class Flexor
   end
 
   def []=(key, value)
-    @store[key] = value
+    @store[key] = vivify_value(value)
   end
 
   def to_ary
@@ -170,6 +170,15 @@ class Flexor
   end
 
   private
+
+  def vivify_value(value)
+    case value
+    when Flexor then value
+    when Hash then self.class.new(value, root: false)
+    when Array then self.class.vivify_array(value)
+    else value
+    end
+  end
 
   def recurse_to_h(object)
     case object

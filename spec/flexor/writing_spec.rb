@@ -89,20 +89,15 @@ RSpec.describe Flexor do
   describe "assigning a plain hash via setter" do
     subject { described_class.new }
 
-    context "stores the raw hash" do
+    context "auto-converts the hash to a Flexor" do
       before { subject.config = { db: { host: "localhost" } } }
 
-      it "bracket access returns a Hash, not a Flexor" do
-        expect(subject[:config]).to be_a Hash
-        expect(subject[:config]).not_to be_a described_class
+      it "bracket access returns a Flexor, not a Hash" do
+        expect(subject[:config]).to be_a described_class
       end
-    end
 
-    context "method chaining on the assigned hash" do
-      before { subject.config = { db: { host: "localhost" } } }
-
-      it "raises NoMethodError (Hash does not support dynamic methods)" do
-        expect { subject.config.db }.to raise_error(NoMethodError)
+      it "method chaining works on the assigned value" do
+        expect(subject.config.db.host).to eq "localhost"
       end
     end
   end
@@ -118,10 +113,10 @@ RSpec.describe Flexor do
     end
 
     context "with an array of hashes" do
-      it "stores raw hashes (does not auto-convert)" do
+      it "auto-converts inner hashes to Flexors" do
         subject.items = [{ id: 1 }, { id: 2 }]
-        expect(subject.items.first).to be_a Hash
-        expect(subject.items.first).not_to be_a described_class
+        expect(subject.items.first).to be_a described_class
+        expect(subject.items.first.id).to eq 1
       end
     end
   end
@@ -140,10 +135,10 @@ RSpec.describe Flexor do
     end
 
     it "replacing a scalar with a nested write vivifies the new path" do
-      subject.user.name = "bob"
       subject.user = "flat"
       subject.user = { first: "carol" }
-      expect(subject[:user]).to be_a Hash
+      expect(subject[:user]).to be_a described_class
+      expect(subject.user.first).to eq "carol"
     end
 
     it "replacing a scalar with nil makes the property read as nil" do
