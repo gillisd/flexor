@@ -18,14 +18,22 @@ class Flexor
     original_hash.each do |key, value|
       new_hash[key] = case value
                       when Hash  then new(value, root: false)
-                      when Array then value.map { |item|
-                        item.is_a?(Hash) ? new(item, root: false) : item
-                      }
+                      when Array then vivify_array(value)
                       else value
                       end
     end
 
     new_hash
+  end
+
+  def self.vivify_array(array)
+    array.map do |item|
+      case item
+      when Hash then new(item, root: false)
+      when Array then vivify_array(item)
+      else item
+      end
+    end
   end
 
   def self.from_json(json)
@@ -41,6 +49,11 @@ class Flexor
     @store = self.class.vivify(hash)
   end
 
+  def initialize_copy(original)
+    super
+    @store = @store.dup
+  end
+
   def [](key)
     @store[key]
   end
@@ -50,8 +63,16 @@ class Flexor
   end
 
   def to_ary
-    # called on #puts, this prevents it from going to method missing
     nil
+  end
+
+  def to_a
+    @store.to_a
+  end
+
+  def freeze
+    @store.freeze
+    super
   end
 
   def to_h
