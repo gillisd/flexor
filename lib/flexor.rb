@@ -87,6 +87,47 @@ class Flexor
     @store.empty?
   end
 
+  def empty?
+    @store.empty?
+  end
+
+  def keys
+    @store.keys
+  end
+
+  def values
+    @store.values
+  end
+
+  def size
+    @store.size
+  end
+
+  def length
+    @store.length
+  end
+
+  def key?(key)
+    @store.key?(key)
+  end
+  alias has_key? key?
+
+  def each(&block)
+    @store.each(&block)
+  end
+
+  def each_key(&block)
+    @store.each_key(&block)
+  end
+
+  def map(&block)
+    @store.map(&block)
+  end
+
+  def select(&block)
+    @store.select(&block)
+  end
+
   def ==(other)
     case other
     in nil then nil?
@@ -116,20 +157,20 @@ class Flexor
     end
   end
 
-  def method_missing(name, *args)
-    case [name, args, @store.keys]
-    in /^[^=]+=$/, [arg], _
+  def method_missing(name, *args, &block)
+    return super if block
+
+    case [name, args]
+    in /^[^=]+=$/, [arg]
       self[name.to_s.chomp("=").to_sym] = arg
-    in _, [], [*, ^name, *]
-      self[name]
-    in _, [], _
+    in _, []
       self[name]
     else
       super
     end
   end
 
-  def respond_to_missing?(*args, include_private: false)
+  def respond_to_missing?(_name, _include_private = false)
     true
   end
 end
