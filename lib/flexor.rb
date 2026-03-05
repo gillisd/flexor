@@ -55,8 +55,9 @@ class Flexor
   end
 
   def to_h
-    @store.transform_values do |value|
-      recurse_to_h(value)
+    @store.each_with_object({}) do |(key, value), hash|
+      result = recurse_to_h(value)
+      hash[key] = result unless value.is_a?(Flexor) && result.nil?
     end
   end
 
@@ -107,9 +108,10 @@ class Flexor
 
   def recurse_to_h(object)
     case object
-    in {} then nil
     in Array then object.map { recurse_to_h(it) }
-    in ^(self.class) then object.to_h
+    in ^(self.class)
+      converted = object.to_h
+      converted.empty? ? nil : converted
     else object
     end
   end
