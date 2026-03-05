@@ -103,7 +103,9 @@ class Flexor
     @store.inspect
   end
 
-  def deconstruct; end
+  def deconstruct
+    @store.values
+  end
 
   def deconstruct_keys(keys)
     return @store if keys.nil?

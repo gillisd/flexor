@@ -235,9 +235,35 @@ RSpec.describe Flexor do
   end
 
   describe "#deconstruct" do
-    it "documents the intended behavior for array-style pattern matching" do
-      store = described_class.new({ a: 1, b: 2 })
-      expect(store).to respond_to(:deconstruct)
+    it "returns the values of the store for array-style pattern matching" do
+      store = described_class.new({ x: 1, y: -2 })
+      case store
+      in [Integer, Integer]
+        matched = true
+      else
+        matched = false
+      end
+      expect(matched).to be true
+    end
+
+    it "supports variable binding in array patterns" do
+      store = described_class.new({ x: 1, y: -2 })
+      case store
+      in [x, y]
+        expect(x).to eq 1
+        expect(y).to eq(-2)
+      end
+    end
+
+    it "returns an empty array for an empty Flexor" do
+      store = described_class.new
+      expect(store.deconstruct).to eq []
+    end
+
+    it "preserves nested Flexors for recursive pattern matching" do
+      store = described_class.new({ point: { x: 1, y: 2 } })
+      values = store.deconstruct
+      expect(values.first).to be_a described_class
     end
   end
 end
