@@ -97,9 +97,11 @@ class Flexor
   end
 
   def ===(other)
+    other.nil? ? nil? : super
   end
 
   def self.===(other)
+    other.is_a?(self)
   end
 
   private
