@@ -93,6 +93,26 @@ config.db.name   # => "mydb"       (added)
 config.log       # => "debug"      (overridden)
 ```
 
+### Serialization
+
+`to_json` converts to JSON via `to_h`:
+
+```ruby
+store = Flexor.new({ user: { name: "Alice" }, tags: ["admin"] })
+store.to_json   # => '{"user":{"name":"Alice"},"tags":["admin"]}'
+
+# Round-trips with from_json
+Flexor.from_json(store.to_json).user.name   # => "Alice"
+```
+
+### Deleting Keys
+
+```ruby
+store = Flexor.new({ a: 1, b: 2, c: 3 })
+store.delete(:b)   # => 2
+store.to_h          # => { a: 1, c: 3 }
+```
+
 ### Raw Storage
 
 If you need to store a raw Hash without conversion, use `set_raw`:

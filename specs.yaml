@@ -152,6 +152,19 @@ Flexor#merge!:
   deep merges nested hashes in place
   accepts a Flexor as argument
 
+Flexor#delete:
+  removes the key and returns the value
+  returns nil for a missing key
+  removes nested Flexors
+  does not affect other keys
+
+Flexor#to_json:
+  serializes scalar values
+  serializes nested Flexors
+  serializes arrays
+  round-trips with from_json
+  serializes an empty Flexor as an empty object
+
 overwriting:
   replacing a nested subtree with a scalar:
     the scalar is stored
