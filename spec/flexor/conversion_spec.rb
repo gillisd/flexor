@@ -237,12 +237,12 @@ RSpec.describe Flexor do
   describe "#deconstruct" do
     it "returns the values of the store for array-style pattern matching" do
       store = described_class.new({ x: 1, y: -2 })
-      case store
-      in [Integer, Integer]
-        matched = true
-      else
-        matched = false
-      end
+      matched = case store
+                in [Integer, Integer]
+                  true
+                else
+                  false
+                end
       expect(matched).to be true
     end
 

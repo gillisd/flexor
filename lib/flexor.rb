@@ -179,7 +179,6 @@ class Flexor
 
   def vivify_value(value)
     case value
-    when Flexor then value
     when Hash then self.class.new(value, root: false)
     when Array then self.class.vivify_array(value)
     else value
