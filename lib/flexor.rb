@@ -77,10 +77,9 @@ class Flexor
   def deconstruct
   end
 
-  def deconstruct_keys(*keys)
-    return @store if keys.nil? || keys.empty?
+  def deconstruct_keys(keys)
+    return @store if keys.nil?
 
-    keys = @store.keys
     @store.slice(*keys)
   end
 
