@@ -66,6 +66,10 @@ class Flexor
     @store[key] = vivify_value(value)
   end
 
+  def set_raw(key, value)
+    @store[key] = value
+  end
+
   def to_ary
     nil
   end

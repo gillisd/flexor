@@ -147,4 +147,24 @@ RSpec.describe Flexor do
       expect(subject.user.name).to be_nil
     end
   end
+
+  describe "#set_raw" do
+    subject { described_class.new }
+
+    it "stores a hash without vivification" do
+      subject.set_raw(:config, { db: { host: "localhost" } })
+      expect(subject[:config]).to be_a Hash
+      expect(subject[:config]).not_to be_a described_class
+    end
+
+    it "stores an array of hashes without vivification" do
+      subject.set_raw(:items, [{ id: 1 }, { id: 2 }])
+      expect(subject.items.first).to be_a Hash
+    end
+
+    it "stores scalars normally" do
+      subject.set_raw(:name, "alice")
+      expect(subject.name).to eq "alice"
+    end
+  end
 end
