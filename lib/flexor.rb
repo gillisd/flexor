@@ -88,10 +88,11 @@ class Flexor
     @store.empty?
   end
 
-  def ==(other) 
+  def ==(other)
     case other
     in nil then nil?
-    in Hash then (to_h == other)
+    in Flexor then to_h == other.to_h
+    in Hash then to_h == other
     else super
     end
   end
