@@ -1,92 +1,153 @@
-Flexor:
-  reading a level 1 property via method:
-    the property does exist:
+Flexor.new:
+  with an empty hash:
+    creates an empty store
+  with a flat hash:
+    stores all key-value pairs
+  with a nested hash:
+    recursively converts nested hashes into Flexors
+    allows method access at every level
+  with a deeply nested hash (3+ levels):
+    allows method access at every level
+  with a hash containing arrays:
+    preserves arrays of scalars
+    converts hashes inside arrays into Flexors
+  with a non-hash argument:
+    raises ArgumentError
+
+Flexor.from_json:
+  with valid JSON:
+    creates a Flexor with symbolized keys
+    allows method access on parsed values
+  with nested JSON:
+    recursively converts nested objects
+  with invalid JSON:
+    raises a parse error
+
+reading a level 1 property via method:
+  the property does exist:
+    reads the correct property
+  the property does NOT exist:
+    returns a value where nil? is true
+    returns a value that == nil
+    does not return the nil singleton
+
+reading a level 1 property via hash accessor:
+  the property does exist:
+    reads the correct property
+  the property does NOT exist:
+    returns a value where nil? is true
+    returns a value that == nil
+    does not return the nil singleton
+
+reading a level 2 property via method:
+  the level 1 property does exist:
+    the level 2 property does exist:
       reads the correct property
-    the property does NOT exist:
-      reads nil
-  reading a level 1 property via hash accessor:
-    the property does exist:
+    the level 2 property does NOT exist:
+      returns a value where nil? is true
+  the level 1 property does NOT exist:
+    returns a value where nil? is true
+    the returned value is itself a Flexor that supports further chaining
+
+reading a level 2 property via hash accessor:
+  the level 1 property does exist:
+    the level 2 property does exist:
       reads the correct property
-    the property does NOT exist:
-      reads nil
-  reading a level 2 property via method:
-    the level 1 property does exist:
-      the level 2 property does exist:
-        reads the correct property
-      the level 2 property does NOT exist:
-        reads nil
-    the level 1 property does NOT exist:
-      reads nil
-  reading a level 2 property via hash accessor:
-    the level 1 property does exist:
-      the level 2 property does exist:
-        reads the correct property
-      the level 2 property does NOT exist:
-        reads nil
-    the level 1 property does NOT exist:
-      reads nil
+    the level 2 property does NOT exist:
+      returns a value where nil? is true
+  the level 1 property does NOT exist:
+    returns a value where nil? is true
+    the returned value is itself a Flexor that supports further chaining
 
-  writing a level 1 property via method:
+writing a level 1 property via method:
+  writes and reads the written property
+
+writing a level 1 property via hash accessor:
+  writes and reads the written property
+
+writing a level 2 property via method:
+  the level 1 property has been set:
     writes and reads the written property
-  writing a level 1 property via hash accessor:
+  the level 1 property has NOT been set:
     writes and reads the written property
-  writing a level 2 property via method:
-    the level 1 property has been set:
-      writes and reads the written property
-    the level 1 property has NOT been set:
-      writes and reads the written property
-  writing a level 2 property via hash accessor:
-    the level one property has been set:
-      writes and reads the written property
-    the level 1 property has NOT been set:
-      writes and reads the written property
 
- Flexor#nil?:
-   when comparing an accessed value:
-     when its property has NOT been set:
-       is expected to be truthy
-     when its property has been set:
-       when set explicitly to nil:
-         is expected to be truthy
-       when not nil:
-         is expected to be falsey
+writing a level 2 property via hash accessor:
+  the level 1 property has been set:
+    writes and reads the written property
+  the level 1 property has NOT been set:
+    writes and reads the written property
 
- Flexor#==:
-   when comparing an accessed value:
-     when its property has NOT been set:
-       when the other is a NilClass:
-         is expected to be truthy
-       when the other is NOT a NilClass:
-         is expected to be falsey
-     when value is another Flexor:
-       when the other is a Hash:
-         when the keys and values are identical: 
-           is expected to be truthy
-         when the keys and values are NOT identical: 
-           is expected to be falsey
-     when value explicitly set to nil:
-       when the other is a NilClass:
-         is expected to be truthy
-       when the other is not a NilClass or Hash:
-         is expected to be falsey
-     when value is a String:
-       when the other is a String:
-         when the strings are identical:
-           is expected to be truthy
-         when the strings are not identical:
-           is expected to be falsey
+overwriting:
+  replacing a nested subtree with a scalar:
+    the scalar is stored
+    the old subtree is gone
+  replacing a scalar with a nested write:
+    vivifies the new path
 
-  Flexor#to_s:
-    when the property has been set:
-      to a scalar value:
-        returns the string representation of the store
-      to a nested value:
-        returns the string representation of the store
-    when the property has NOT been set:
-      returns an empty string to match nil.to_s behavior
-      returns an empty string, not actual nil
-      is indistinguishable from nil in string interpolation
-      is indistinguishable from nil when passed to puts
-    at multiple levels of depth:
-      returns empty string at every unset level
-      is indistinguishable from nil in puts at any depth
+Flexor#nil?:
+  on an unset property (empty Flexor):
+    is expected to be truthy
+  on a property with a value:
+    is expected to be falsey
+  on a property set explicitly to nil:
+    # This accesses the real nil singleton, not a Flexor.
+    # Documenting end-to-end behavior, not Flexor#nil?.
+    is expected to be truthy (via NilClass#nil?, not Flexor#nil?)
+
+Flexor#==:
+  when comparing an unset property (empty Flexor):
+    against nil:
+      is expected to be truthy
+    against a non-nil value:
+      is expected to be falsey
+  when comparing two Flexors:
+    when both have identical contents:
+      is expected to be truthy
+    when contents differ:
+      is expected to be falsey
+    when both are empty:
+      is expected to be truthy
+  when comparing a Flexor against a Hash:
+    when the keys and values are identical:
+      is expected to be truthy
+    when the keys and values are NOT identical:
+      is expected to be falsey
+  when comparing a property set explicitly to nil:
+    against nil:
+      is expected to be truthy
+    against a non-nil value:
+      is expected to be falsey
+  when comparing a scalar value:
+    against an identical scalar:
+      is expected to be truthy
+    against a different scalar:
+      is expected to be falsey
+
+Flexor#to_s:
+  when the property has been set:
+    to a scalar value:
+      returns the string representation of the store
+    to a nested value:
+      returns the string representation of the store
+  when the property has NOT been set:
+    returns an empty string to match nil.to_s behavior
+    returns an empty string, not actual nil
+    is indistinguishable from nil in string interpolation
+    is indistinguishable from nil when passed to puts
+  at multiple levels of depth:
+    returns empty string at every unset level
+    is indistinguishable from nil in puts at any depth
+
+Flexor#to_h:
+  with scalar values:
+    returns a plain hash with scalar values
+  with nested Flexors:
+    recursively converts Flexors back to hashes
+  round-trip:
+    input hash survives new -> to_h unchanged
+  with autovivified but never written paths:
+    does not include phantom keys
+
+respond_to?:
+  for any arbitrary method name:
+    is expected to be truthy
