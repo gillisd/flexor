@@ -1,0 +1,175 @@
+Ruby 4.0.1 (YJIT: enabled)
+Flexor 0.0.1
+Hashie 5.1.1
+
+============================================================
+CONSTRUCTION
+============================================================
+ruby 4.0.1 (2026-01-13 revision e04267a14b) +YJIT +PRISM [aarch64-linux]
+Warming up --------------------------------------
+   Flexor.new (flat)   163.066k i/100ms
+     Mash.new (flat)    52.640k i/100ms
+   OpenStruct (flat)    13.099k i/100ms
+Calculating -------------------------------------
+   Flexor.new (flat)      1.721M (± 9.6%) i/s  (581.18 ns/i) -      8.642M in   5.094349s
+     Mash.new (flat)    533.781k (± 1.4%) i/s    (1.87 μs/i) -      2.685M in   5.030551s
+   OpenStruct (flat)    124.015k (± 5.2%) i/s    (8.06 μs/i) -    628.752k in   5.086193s
+
+Comparison:
+   Flexor.new (flat):  1720629.7 i/s
+     Mash.new (flat):   533781.0 i/s - 3.22x  slower
+   OpenStruct (flat):   124015.0 i/s - 13.87x  slower
+
+
+ruby 4.0.1 (2026-01-13 revision e04267a14b) +YJIT +PRISM [aarch64-linux]
+Warming up --------------------------------------
+ Flexor.new (nested)    65.146k i/100ms
+   Mash.new (nested)    21.485k i/100ms
+ OpenStruct (nested)    28.870k i/100ms
+Calculating -------------------------------------
+ Flexor.new (nested)    623.855k (± 3.3%) i/s    (1.60 μs/i) -      3.127M in   5.018035s
+   Mash.new (nested)    214.900k (± 1.5%) i/s    (4.65 μs/i) -      1.096M in   5.099994s
+ OpenStruct (nested)    252.759k (± 5.2%) i/s    (3.96 μs/i) -      1.270M in   5.040492s
+
+Comparison:
+ Flexor.new (nested):   623854.6 i/s
+ OpenStruct (nested):   252759.3 i/s - 2.47x  slower
+   Mash.new (nested):   214900.2 i/s - 2.90x  slower
+
+
+============================================================
+READING (method access)
+============================================================
+ruby 4.0.1 (2026-01-13 revision e04267a14b) +YJIT +PRISM [aarch64-linux]
+Warming up --------------------------------------
+         Flexor#name   799.709k i/100ms
+           Mash#name   343.414k i/100ms
+     OpenStruct#name     1.220M i/100ms
+Calculating -------------------------------------
+         Flexor#name     10.128M (± 9.4%) i/s   (98.74 ns/i) -     50.382M in   5.024214s
+           Mash#name      3.849M (± 8.8%) i/s  (259.78 ns/i) -     19.231M in   5.036833s
+     OpenStruct#name     17.994M (± 8.7%) i/s   (55.57 ns/i) -     90.310M in   5.059803s
+
+Comparison:
+     OpenStruct#name: 17993847.7 i/s
+         Flexor#name: 10127706.6 i/s - 1.78x  slower
+           Mash#name:  3849448.9 i/s - 4.67x  slower
+
+
+============================================================
+READING (nested chaining)
+============================================================
+ruby 4.0.1 (2026-01-13 revision e04267a14b) +YJIT +PRISM [aarch64-linux]
+Warming up --------------------------------------
+        Flexor chain   294.871k i/100ms
+          Mash chain   124.885k i/100ms
+Calculating -------------------------------------
+        Flexor chain      3.695M (± 5.7%) i/s  (270.66 ns/i) -     18.577M in   5.046400s
+          Mash chain      1.428M (± 1.2%) i/s  (700.26 ns/i) -      7.243M in   5.073040s
+
+Comparison:
+        Flexor chain:  3694724.7 i/s
+          Mash chain:  1428036.7 i/s - 2.59x  slower
+
+
+============================================================
+WRITING (method setter)
+============================================================
+ruby 4.0.1 (2026-01-13 revision e04267a14b) +YJIT +PRISM [aarch64-linux]
+Warming up --------------------------------------
+        Flexor#name=   575.837k i/100ms
+          Mash#name=    69.733k i/100ms
+    OpenStruct#name=   819.293k i/100ms
+Calculating -------------------------------------
+        Flexor#name=      6.786M (± 3.5%) i/s  (147.36 ns/i) -     33.974M in   5.014192s
+          Mash#name=    715.935k (± 1.2%) i/s    (1.40 μs/i) -      3.626M in   5.065556s
+    OpenStruct#name=      9.487M (±15.0%) i/s  (105.41 ns/i) -     45.880M in   5.005795s
+
+Comparison:
+    OpenStruct#name=:  9487184.9 i/s
+        Flexor#name=:  6785984.8 i/s - 1.40x  slower
+          Mash#name=:   715934.6 i/s - 13.25x  slower
+
+
+============================================================
+WRITING (hash assignment)
+============================================================
+ruby 4.0.1 (2026-01-13 revision e04267a14b) +YJIT +PRISM [aarch64-linux]
+Warming up --------------------------------------
+     Flexor []= hash    70.692k i/100ms
+       Mash []= hash    42.105k i/100ms
+Calculating -------------------------------------
+     Flexor []= hash    722.453k (± 1.4%) i/s    (1.38 μs/i) -      3.676M in   5.089203s
+       Mash []= hash    427.759k (± 1.2%) i/s    (2.34 μs/i) -      2.147M in   5.020685s
+
+Comparison:
+     Flexor []= hash:   722453.4 i/s
+       Mash []= hash:   427758.7 i/s - 1.69x  slower
+
+
+============================================================
+AUTOVIVIFICATION (deep write)
+============================================================
+ruby 4.0.1 (2026-01-13 revision e04267a14b) +YJIT +PRISM [aarch64-linux]
+Warming up --------------------------------------
+     Flexor a.b.c.d=     7.491k i/100ms
+    Mash a!.b!.c!.d=    26.742k i/100ms
+Calculating -------------------------------------
+     Flexor a.b.c.d=     70.677k (± 5.8%) i/s   (14.15 μs/i) -    359.568k in   5.107327s
+    Mash a!.b!.c!.d=    269.153k (± 1.5%) i/s    (3.72 μs/i) -      1.364M in   5.068281s
+
+Comparison:
+    Mash a!.b!.c!.d=:   269152.7 i/s
+     Flexor a.b.c.d=:    70677.4 i/s - 3.81x  slower
+
+
+============================================================
+CONVERSION (to_h)
+============================================================
+ruby 4.0.1 (2026-01-13 revision e04267a14b) +YJIT +PRISM [aarch64-linux]
+Warming up --------------------------------------
+  Flexor#to_h (deep)    53.044k i/100ms
+    Mash#to_h (deep)     1.113M i/100ms
+     OpenStruct#to_h   583.538k i/100ms
+Calculating -------------------------------------
+  Flexor#to_h (deep)    544.961k (± 1.6%) i/s    (1.83 μs/i) -      2.758M in   5.062731s
+    Mash#to_h (deep)     15.876M (± 1.5%) i/s   (62.99 ns/i) -     80.124M in   5.048076s
+     OpenStruct#to_h      7.316M (± 1.4%) i/s  (136.68 ns/i) -     36.763M in   5.025665s
+
+Comparison:
+    Mash#to_h (deep): 15875729.1 i/s
+     OpenStruct#to_h:  7316392.4 i/s - 2.17x  slower
+  Flexor#to_h (deep):   544960.9 i/s - 29.13x  slower
+
+
+============================================================
+DEEP MERGE
+============================================================
+ruby 4.0.1 (2026-01-13 revision e04267a14b) +YJIT +PRISM [aarch64-linux]
+Warming up --------------------------------------
+        Flexor#merge   141.366k i/100ms
+          Mash#merge    17.957k i/100ms
+Calculating -------------------------------------
+        Flexor#merge      1.520M (± 1.2%) i/s  (657.82 ns/i) -      7.634M in   5.022294s
+          Mash#merge    180.829k (± 0.9%) i/s    (5.53 μs/i) -    915.807k in   5.064952s
+
+Comparison:
+        Flexor#merge:  1520181.4 i/s
+          Mash#merge:   180828.6 i/s - 8.41x  slower
+
+
+============================================================
+MISSING KEY ACCESS
+============================================================
+ruby 4.0.1 (2026-01-13 revision e04267a14b) +YJIT +PRISM [aarch64-linux]
+Warming up --------------------------------------
+      Flexor missing   806.094k i/100ms
+        Mash missing   133.262k i/100ms
+Calculating -------------------------------------
+      Flexor missing     10.920M (± 1.4%) i/s   (91.58 ns/i) -     54.814M in   5.020653s
+        Mash missing      1.289M (± 1.2%) i/s  (775.78 ns/i) -      6.530M in   5.066387s
+
+Comparison:
+      Flexor missing: 10919839.7 i/s
+        Mash missing:  1289028.6 i/s - 8.47x  slower
+
