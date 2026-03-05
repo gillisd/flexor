@@ -70,6 +70,10 @@ class Flexor
     @store[key] = value
   end
 
+  def delete(key)
+    @store.delete(key)
+  end
+
   def to_ary
     nil
   end
@@ -88,6 +92,11 @@ class Flexor
       result = recurse_to_h(value)
       hash[key] = result unless value.is_a?(Flexor) && result.nil?
     end
+  end
+
+  def to_json(...)
+    require "json"
+    to_h.to_json(...)
   end
 
   def to_s
