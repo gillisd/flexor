@@ -19,10 +19,11 @@ RSpec.describe Flexor do
     end
 
     context "via direct assignment" do
-      it "assigning an array of hashes does not auto-convert" do
+      it "assigning an array of hashes auto-converts inner hashes" do
         store = described_class.new
         store.items = [{ id: 1 }, { id: 2 }]
-        expect(store.items.first).to be_a Hash
+        expect(store.items.first).to be_a described_class
+        expect(store.items.first.id).to eq 1
       end
     end
 
