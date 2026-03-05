@@ -120,24 +120,20 @@ writing at arbitrary depth (3+ levels):
     writes and reads the written property
 
 assigning a plain hash via setter:
-  # store.config = { db: { host: "localhost" } }
-  # []= does not run through vivify, so this stores a raw Hash
-  stores the raw hash:
-    bracket access returns a Hash, not a Flexor
-  method chaining on the assigned hash:
-    raises NoMethodError (Hash does not support dynamic methods)
-  # OR if you decide to vivify on assignment:
-  # auto-converts the hash:
-  #   bracket access returns a Flexor
-  #   method chaining works on the assigned value
+  auto-converts the hash to a Flexor:
+    bracket access returns a Flexor, not a Hash
+    method chaining works on the assigned value
 
 assigning an array via setter:
   with an array of scalars:
     stores and retrieves the array
   with an array of hashes:
-    stores raw hashes (does not auto-convert)
-    # OR if you decide to vivify:
-    # auto-converts inner hashes to Flexors
+    auto-converts inner hashes to Flexors
+
+Flexor#set_raw:
+  stores a hash without vivification
+  stores an array of hashes without vivification
+  stores scalars normally
 
 overwriting:
   replacing a nested subtree with a scalar:
@@ -202,7 +198,6 @@ Flexor#==:
       documents whether equality is symmetric
 
 Flexor#===:
-  # case/when support for instance-level matching
   when used in a case/when on a Flexor value:
     matching against a scalar:
       matches when values are equal
@@ -210,7 +205,6 @@ Flexor#===:
       matches when property is unset
 
 Flexor.===:
-  # case/when support for class-level matching
   when used as a class in case/when:
     matches a Flexor instance
     does not match a plain Hash
@@ -271,10 +265,7 @@ Flexor#to_h:
     deeply nested hash survives new -> to_h unchanged
     hash with arrays survives new -> to_h unchanged
   with autovivified but never written paths:
-    # store.a.b.c (read only) then store.to_h
-    # Design decision: does the phantom path appear?
     does not include phantom keys
-    # OR: includes phantom keys as nil-terminated paths
 
 Flexor#deconstruct_keys:
   with a Flexor containing values:
@@ -289,9 +280,10 @@ Flexor#deconstruct_keys:
     returns an empty hash
 
 Flexor#deconstruct:
-  # Array-style pattern matching: case store in [a, b, c]
-  # Design decision: what does this mean for a hash-backed store?
-  documents the intended behavior
+  returns the values of the store for array-style pattern matching
+  supports variable binding in array patterns
+  returns an empty array for an empty Flexor
+  preserves nested Flexors for recursive pattern matching
 
 hash-like query methods:
   empty?:
@@ -326,8 +318,6 @@ symbol vs string keys:
   cross-access:
     store.foo and store[:foo] access the same value
     store.foo and store["foo"] do NOT access the same value
-    # OR if you decide to normalize:
-    # store["foo"] and store[:foo] access the same value
 
 method name collisions:
   methods defined on Object (class, freeze, hash, object_id, send, display):
@@ -363,9 +353,7 @@ array handling end-to-end:
     scalars inside arrays are preserved
     nested arrays of hashes are converted recursively
   via direct assignment:
-    assigning an array of hashes does not auto-convert
-    # OR if you decide it should:
-    # assigning an array of hashes auto-converts inner hashes
+    assigning an array of hashes auto-converts inner hashes
   reading from arrays stored in Flexor:
     array elements are accessible via standard array methods
 
@@ -376,11 +364,10 @@ autovivification side effects:
   chaining reads on unset properties:
     creates keys at every intermediate level
   implications for to_h after read-only access:
-    # This ties back to the "phantom keys" question above
-    documents whether reads leave traces
+    # This ties back to the phantom keys exclusion above
+    reads do not leave traces in to_h
 
 thread safety:
-  # If this matters to you
   concurrent reads on the same Flexor:
     do not raise
   concurrent writes to different keys:
@@ -397,8 +384,6 @@ dup and clone:
     modifications to the clone do not affect the original
   deep nesting:
     dup is shallow (nested Flexors are shared)
-    # OR if you implement deep copy:
-    # dup is deep (nested Flexors are independent copies)
 
 freeze:
   freezing a Flexor:
@@ -407,9 +392,5 @@ freeze:
     autovivification raises on frozen store
 
 enumeration:
-  # If you want Flexor to be enumerable
   each / map / select:
     delegates to the underlying store
-  # OR:
-  does not support enumeration:
-    raises NoMethodError for each
