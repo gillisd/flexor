@@ -1,0 +1,92 @@
+Flexor:
+  reading a level 1 property via method:
+    the property does exist:
+      reads the correct property
+    the property does NOT exist:
+      reads nil
+  reading a level 1 property via hash accessor:
+    the property does exist:
+      reads the correct property
+    the property does NOT exist:
+      reads nil
+  reading a level 2 property via method:
+    the level 1 property does exist:
+      the level 2 property does exist:
+        reads the correct property
+      the level 2 property does NOT exist:
+        reads nil
+    the level 1 property does NOT exist:
+      reads nil
+  reading a level 2 property via hash accessor:
+    the level 1 property does exist:
+      the level 2 property does exist:
+        reads the correct property
+      the level 2 property does NOT exist:
+        reads nil
+    the level 1 property does NOT exist:
+      reads nil
+
+  writing a level 1 property via method:
+    writes and reads the written property
+  writing a level 1 property via hash accessor:
+    writes and reads the written property
+  writing a level 2 property via method:
+    the level 1 property has been set:
+      writes and reads the written property
+    the level 1 property has NOT been set:
+      writes and reads the written property
+  writing a level 2 property via hash accessor:
+    the level one property has been set:
+      writes and reads the written property
+    the level 1 property has NOT been set:
+      writes and reads the written property
+
+ Flexor#nil?:
+   when comparing an accessed value:
+     when its property has NOT been set:
+       is expected to be truthy
+     when its property has been set:
+       when set explicitly to nil:
+         is expected to be truthy
+       when not nil:
+         is expected to be falsey
+
+ Flexor#==:
+   when comparing an accessed value:
+     when its property has NOT been set:
+       when the other is a NilClass:
+         is expected to be truthy
+       when the other is NOT a NilClass:
+         is expected to be falsey
+     when value is another Flexor:
+       when the other is a Hash:
+         when the keys and values are identical: 
+           is expected to be truthy
+         when the keys and values are NOT identical: 
+           is expected to be falsey
+     when value explicitly set to nil:
+       when the other is a NilClass:
+         is expected to be truthy
+       when the other is not a NilClass or Hash:
+         is expected to be falsey
+     when value is a String:
+       when the other is a String:
+         when the strings are identical:
+           is expected to be truthy
+         when the strings are not identical:
+           is expected to be falsey
+
+  Flexor#to_s:
+    when the property has been set:
+      to a scalar value:
+        returns the string representation of the store
+      to a nested value:
+        returns the string representation of the store
+    when the property has NOT been set:
+      returns an empty string to match nil.to_s behavior
+      returns an empty string, not actual nil
+      is indistinguishable from nil in string interpolation
+      is indistinguishable from nil when passed to puts
+    at multiple levels of depth:
+      returns empty string at every unset level
+      is indistinguishable from nil in puts at any depth
