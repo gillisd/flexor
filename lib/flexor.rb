@@ -61,8 +61,7 @@ class Flexor
   end
 
   def to_s
-    return nil if nil?
-    return @store.to_s if @root
+    return "" if nil?
 
     @store.to_s
   end
