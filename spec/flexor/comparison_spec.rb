@@ -6,12 +6,12 @@ RSpec.describe Flexor do
     end
 
     it "is falsey on a property with a value" do
-      store = described_class.new({name: "alice"})
+      store = described_class.new({ name: "alice" })
       expect(store.name.nil?).to be false
     end
 
     it "is truthy on a property set explicitly to nil (via NilClass#nil?)" do
-      store = described_class.new({gone: nil})
+      store = described_class.new({ gone: nil })
       expect(store.gone.nil?).to be true
     end
 
@@ -21,7 +21,7 @@ RSpec.describe Flexor do
     end
 
     it "is falsey on a root Flexor with data" do
-      store = described_class.new({a: 1})
+      store = described_class.new({ a: 1 })
       expect(store.nil?).to be false
     end
   end
@@ -31,7 +31,7 @@ RSpec.describe Flexor do
       subject { described_class.new }
 
       it "against nil is truthy" do
-        expect(subject.missing == nil).to be true
+        expect(subject.missing == nil).to be true # rubocop:disable Style/NilComparison
       end
 
       it "against a non-nil value is falsey" do
@@ -41,14 +41,14 @@ RSpec.describe Flexor do
 
     context "when comparing two Flexors" do
       it "is truthy when both have identical contents" do
-        a = described_class.new({x: 1, y: 2})
-        b = described_class.new({x: 1, y: 2})
+        a = described_class.new({ x: 1, y: 2 })
+        b = described_class.new({ x: 1, y: 2 })
         expect(a == b).to be true
       end
 
       it "is falsey when contents differ" do
-        a = described_class.new({x: 1})
-        b = described_class.new({x: 2})
+        a = described_class.new({ x: 1 })
+        b = described_class.new({ x: 2 })
         expect(a == b).to be false
       end
 
@@ -61,21 +61,21 @@ RSpec.describe Flexor do
 
     context "when comparing a Flexor against a Hash" do
       it "is truthy when keys and values are identical" do
-        store = described_class.new({x: 1, y: 2})
-        expect(store == {x: 1, y: 2}).to be true
+        store = described_class.new({ x: 1, y: 2 })
+        expect(store == { x: 1, y: 2 }).to be true
       end
 
       it "is falsey when keys and values are NOT identical" do
-        store = described_class.new({x: 1})
-        expect(store == {x: 99}).to be false
+        store = described_class.new({ x: 1 })
+        expect(store == { x: 99 }).to be false
       end
     end
 
     context "when comparing a property set explicitly to nil" do
-      subject { described_class.new({gone: nil}) }
+      subject { described_class.new({ gone: nil }) }
 
       it "against nil is truthy (via NilClass#==)" do
-        expect(subject.gone == nil).to be true
+        expect(subject.gone == nil).to be true # rubocop:disable Style/NilComparison
       end
 
       it "against a non-nil value is falsey (via NilClass#==)" do
@@ -84,7 +84,7 @@ RSpec.describe Flexor do
     end
 
     context "when comparing a scalar value" do
-      subject { described_class.new({name: "alice"}) }
+      subject { described_class.new({ name: "alice" }) }
 
       it "against an identical scalar is truthy (via String#==)" do
         expect(subject.name == "alice").to be true
@@ -98,10 +98,12 @@ RSpec.describe Flexor do
     context "symmetry" do
       it "documents whether nil == empty Flexor is symmetric" do
         store = described_class.new
-        expect(store == nil).to be true
-        # NilClass#== does not know about Flexor, so this may be false
-        result = (nil == store)
-        expect(result).to eq(result)
+        flexor_equals_nil = (store == nil) # rubocop:disable Style/NilComparison
+        # NilClass#== does not know about Flexor, so reverse may differ
+        nil_equals_flexor = NilClass.instance_method(:==).bind_call(nil, store)
+        expect(flexor_equals_nil).to be true
+        # Document actual behavior without asserting symmetry
+        expect(nil_equals_flexor).to be(true).or be(false)
       end
     end
   end
@@ -109,7 +111,7 @@ RSpec.describe Flexor do
   describe "#===" do
     context "when used in a case/when on a Flexor value" do
       it "matches against a scalar when values are equal" do
-        store = described_class.new({status: "active"})
+        store = described_class.new({ status: "active" })
         matched = case store.status
                   when "active" then true
                   else false
@@ -140,7 +142,8 @@ RSpec.describe Flexor do
       end
 
       it "does not match a plain Hash" do
-        matched = case({a: 1})
+        value = { a: 1 }
+        matched = case value
                   when described_class then true
                   else false
                   end
@@ -148,7 +151,8 @@ RSpec.describe Flexor do
       end
 
       it "does not match nil" do
-        matched = case nil
+        value = nil
+        matched = case value
                   when described_class then true
                   else false
                   end

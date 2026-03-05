@@ -77,6 +77,8 @@ Layout/MultilineMethodCallIndentation:
   EnforcedStyle: indented
 Layout/RedundantLineBreak:
   Enabled: true
+  Exclude:
+  - spec/**/*_spec.rb
 Layout/SpaceAroundMethodCallOperator:
   Enabled: true
 Layout/SpaceInLambdaLiteral:
@@ -175,4 +177,16 @@ Style/TrailingCommaInHashLiteral:
   EnforcedStyleForMultiline: no_comma
 Style/WordArray:
   EnforcedStyle: brackets
+RSpec/MultipleExpectations:
+  Enabled: false
+RSpec/NamedSubject:
+  Enabled: false
+RSpec/ContextWording:
+  Enabled: false
+RSpec/SpecFilePathFormat:
+  Enabled: false
+RSpec/NestedGroups:
+  Enabled: false
+RSpec/ExampleLength:
+  Enabled: false
 

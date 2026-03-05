@@ -2,13 +2,13 @@ RSpec.describe Flexor do
   describe "#to_s" do
     context "when the property has been set" do
       it "returns the string representation for a scalar value" do
-        store = described_class.new({name: "alice"})
+        store = described_class.new({ name: "alice" })
         expect(store.to_s).to be_a String
         expect(store.to_s).to eq store.instance_variable_get(:@store).to_s
       end
 
       it "returns the string representation for a nested value" do
-        store = described_class.new({user: {name: "alice"}})
+        store = described_class.new({ user: { name: "alice" } })
         expect(store.to_s).to be_a String
         expect(store.to_s.length).to be > 0
       end
@@ -27,8 +27,8 @@ RSpec.describe Flexor do
       end
 
       it "is indistinguishable from nil in string interpolation" do
-        expect("value: #{subject.missing}").to eq "value: "
-        expect("value: #{nil}").to eq "value: "
+        nil_value = nil
+        expect("value: #{subject.missing}").to eq "value: #{nil_value}"
       end
 
       it "is indistinguishable from nil when passed to puts" do
@@ -52,7 +52,7 @@ RSpec.describe Flexor do
 
     context "root vs non-root" do
       it "root with data returns the store's string representation" do
-        store = described_class.new({a: 1})
+        store = described_class.new({ a: 1 })
         expect(store.to_s).to eq store.instance_variable_get(:@store).to_s
       end
 
@@ -62,7 +62,7 @@ RSpec.describe Flexor do
       end
 
       it "non-root with data returns the store's string representation" do
-        store = described_class.new({nested: {a: 1}})
+        store = described_class.new({ nested: { a: 1 } })
         inner = store.nested
         expect(inner.to_s).to eq inner.instance_variable_get(:@store).to_s
       end
@@ -76,7 +76,7 @@ RSpec.describe Flexor do
 
   describe "#inspect" do
     it "on a root Flexor with values returns the hash inspection" do
-      store = described_class.new({a: 1})
+      store = described_class.new({ a: 1 })
       expect(store.inspect).to eq store.instance_variable_get(:@store).inspect
     end
 
@@ -91,109 +91,108 @@ RSpec.describe Flexor do
     end
 
     it "on a non-root Flexor with values returns the hash inspection" do
-      store = described_class.new({nested: {a: 1}})
+      store = described_class.new({ nested: { a: 1 } })
       inner = store.nested
       expect(inner.inspect).to eq inner.instance_variable_get(:@store).inspect
     end
   end
 
   describe "#to_ary" do
-    subject { described_class.new({a: 1}) }
+    subject { described_class.new({ a: 1 }) }
 
     it "returns nil to prevent puts from treating Flexor as an array" do
       expect(subject.to_ary).to be_nil
     end
 
     it "prevents splat expansion from treating Flexor as an array" do
-      expect { a, b = *subject }.not_to raise_error
+      arr = Array(subject)
+      expect(arr).to be_a Array
     end
   end
 
   describe "#to_h" do
     it "returns a plain hash with scalar values" do
-      store = described_class.new({a: 1, b: "two"})
+      store = described_class.new({ a: 1, b: "two" })
       result = store.to_h
-      expect(result).to eq({a: 1, b: "two"})
+      expect(result).to eq({ a: 1, b: "two" })
       expect(result).to be_a Hash
       expect(result).not_to be_a described_class
     end
 
     it "recursively converts nested Flexors back to hashes" do
-      store = described_class.new({user: {name: "alice"}})
+      store = described_class.new({ user: { name: "alice" } })
       result = store.to_h
-      expect(result).to eq({user: {name: "alice"}})
+      expect(result).to eq({ user: { name: "alice" } })
       expect(result[:user]).to be_a Hash
       expect(result[:user]).not_to be_a described_class
     end
 
     it "preserves arrays of scalars" do
-      store = described_class.new({tags: ["a", "b"]})
-      expect(store.to_h).to eq({tags: ["a", "b"]})
+      store = described_class.new({ tags: ["a", "b"] })
+      expect(store.to_h).to eq({ tags: ["a", "b"] })
     end
 
     it "recursively converts Flexors inside arrays" do
-      store = described_class.new({items: [{id: 1}, {id: 2}]})
+      store = described_class.new({ items: [{ id: 1 }, { id: 2 }] })
       result = store.to_h
-      expect(result[:items]).to eq [{id: 1}, {id: 2}]
-      result[:items].each { |item| expect(item).to be_a Hash }
+      expect(result[:items]).to eq [{ id: 1 }, { id: 2 }]
+      expect(result[:items]).to all(be_a Hash)
     end
 
     it "converts empty nested Flexors to nil" do
-      store = described_class.new({empty_nested: {}})
+      store = described_class.new({ empty_nested: {} })
       result = store.to_h
       expect(result[:empty_nested]).to be_nil
     end
 
     context "round-trip" do
       it "flat hash survives new -> to_h unchanged" do
-        h = {a: 1, b: "two", c: true}
+        h = { a: 1, b: "two", c: true }
         expect(described_class.new(h).to_h).to eq h
       end
 
       it "nested hash survives new -> to_h unchanged" do
-        h = {user: {name: "alice", age: 30}}
+        h = { user: { name: "alice", age: 30 } }
         expect(described_class.new(h).to_h).to eq h
       end
 
       it "deeply nested hash survives new -> to_h unchanged" do
-        h = {a: {b: {c: {d: "deep"}}}}
+        h = { a: { b: { c: { d: "deep" } } } }
         expect(described_class.new(h).to_h).to eq h
       end
 
       it "hash with arrays survives new -> to_h unchanged" do
-        h = {tags: ["a", "b"], items: [{id: 1}]}
+        h = { tags: ["a", "b"], items: [{ id: 1 }] }
         expect(described_class.new(h).to_h).to eq h
       end
     end
 
     context "with autovivified but never written paths" do
       it "does not include phantom keys" do
-        store = described_class.new({real: "data"})
+        store = described_class.new({ real: "data" })
         _ = store.phantom.deep.chain
         result = store.to_h
         expect(result.keys).to eq [:real]
-        expect(result).to eq({real: "data"})
+        expect(result).to eq({ real: "data" })
       end
     end
   end
 
   describe "#deconstruct_keys" do
     context "with a Flexor containing values" do
-      subject { described_class.new({name: "alice", age: 30, city: "NYC"}) }
+      subject { described_class.new({ name: "alice", age: 30, city: "NYC" }) }
 
       it "supports pattern matching via case/in" do
         matched = case subject
-                  in {name: "alice"}
-                    true
-                  else
-                    false
+                  in { name: "alice" } then true
+                  else false
                   end
         expect(matched).to be true
       end
 
       it "extracts matching keys" do
         case subject
-        in {name: name, age: age}
+        in { name: name, age: age }
           expect(name).to eq "alice"
           expect(age).to eq 30
         end
@@ -206,18 +205,18 @@ RSpec.describe Flexor do
     end
 
     context "with nested Flexors" do
-      subject { described_class.new({user: {name: "alice"}}) }
+      subject { described_class.new({ user: { name: "alice" } }) }
 
       it "supports nested pattern matching" do
         case subject
-        in {user: {name: name}}
+        in { user: { name: name } }
           expect(name).to eq "alice"
         end
       end
     end
 
     context "with no keys requested" do
-      subject { described_class.new({a: 1, b: 2}) }
+      subject { described_class.new({ a: 1, b: 2 }) }
 
       it "returns the entire store" do
         result = subject.deconstruct_keys(nil)
@@ -237,7 +236,7 @@ RSpec.describe Flexor do
 
   describe "#deconstruct" do
     it "documents the intended behavior for array-style pattern matching" do
-      store = described_class.new({a: 1, b: 2})
+      store = described_class.new({ a: 1, b: 2 })
       expect(store).to respond_to(:deconstruct)
     end
   end

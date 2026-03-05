@@ -1,9 +1,9 @@
 RSpec.describe Flexor do
   describe ".from_json" do
     context "with valid flat JSON" do
-      let(:json) { '{"name": "alice", "age": 30}' }
-
       subject { described_class.from_json(json) }
+
+      let(:json) { '{"name": "alice", "age": 30}' }
 
       it "creates a Flexor with symbolized keys" do
         expect(subject[:name]).to eq "alice"
@@ -16,9 +16,9 @@ RSpec.describe Flexor do
     end
 
     context "with nested JSON" do
-      let(:json) { '{"user": {"name": "alice", "address": {"city": "NYC"}}}' }
-
       subject { described_class.from_json(json) }
+
+      let(:json) { '{"user": {"name": "alice", "address": {"city": "NYC"}}}' }
 
       it "recursively converts nested objects" do
         expect(subject[:user]).to be_a described_class
@@ -30,9 +30,9 @@ RSpec.describe Flexor do
     end
 
     context "with JSON containing arrays" do
-      let(:json) { '{"tags": ["a", "b"], "items": [{"id": 1}]}' }
-
       subject { described_class.from_json(json) }
+
+      let(:json) { '{"tags": ["a", "b"], "items": [{"id": 1}]}' }
 
       it "preserves arrays" do
         expect(subject.tags).to eq ["a", "b"]

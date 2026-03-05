@@ -21,10 +21,10 @@ RSpec.describe Flexor do
     end
 
     context "with a flat hash" do
-      subject { described_class.new({name: "alice", age: 30}) }
+      subject { described_class.new({ name: "alice", age: 30 }) }
 
       it "stores all key-value pairs" do
-        expect(subject.to_h).to eq({name: "alice", age: 30})
+        expect(subject.to_h).to eq({ name: "alice", age: 30 })
       end
 
       it "allows method access on each key" do
@@ -39,7 +39,7 @@ RSpec.describe Flexor do
     end
 
     context "with a nested hash" do
-      subject { described_class.new({user: {name: "alice"}}) }
+      subject { described_class.new({ user: { name: "alice" } }) }
 
       it "recursively converts nested hashes into Flexors" do
         expect(subject[:user]).to be_a described_class
@@ -55,7 +55,7 @@ RSpec.describe Flexor do
     end
 
     context "with a deeply nested hash (3+ levels)" do
-      subject { described_class.new({a: {b: {c: "deep"}}}) }
+      subject { described_class.new({ a: { b: { c: "deep" } } }) }
 
       it "allows method access at every level" do
         expect(subject.a.b.c).to eq "deep"
@@ -67,7 +67,7 @@ RSpec.describe Flexor do
     end
 
     context "with a hash containing arrays" do
-      subject { described_class.new({tags: ["a", "b"], items: [{id: 1}, {id: 2}]}) }
+      subject { described_class.new({ tags: ["a", "b"], items: [{ id: 1 }, { id: 2 }] }) }
 
       it "preserves arrays of scalars" do
         expect(subject.tags).to eq ["a", "b"]
@@ -79,7 +79,7 @@ RSpec.describe Flexor do
       end
 
       it "preserves non-hash elements in mixed arrays" do
-        store = described_class.new({mix: [1, {a: 2}, "three"]})
+        store = described_class.new({ mix: [1, { a: 2 }, "three"] })
         expect(store.mix[0]).to eq 1
         expect(store.mix[1]).to be_a described_class
         expect(store.mix[2]).to eq "three"
@@ -87,7 +87,7 @@ RSpec.describe Flexor do
     end
 
     context "with a hash containing nil values" do
-      subject { described_class.new({gone: nil}) }
+      subject { described_class.new({ gone: nil }) }
 
       it "stores the nil value directly" do
         expect(subject[:gone]).to be_nil

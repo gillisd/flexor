@@ -6,11 +6,11 @@ RSpec.describe Flexor do
       end
 
       it "is falsey when the store has data" do
-        expect(described_class.new({a: 1}).empty?).to be false
+        expect(described_class.new({ a: 1 }).empty?).to be false
       end
 
       it "does not autovivify a key named :empty?" do
-        store = described_class.new({a: 1})
+        store = described_class.new({ a: 1 })
         store.empty?
         expect(store.to_h.keys).not_to include(:empty?)
       end
@@ -18,12 +18,12 @@ RSpec.describe Flexor do
 
     describe "#keys" do
       it "returns the keys of the store" do
-        store = described_class.new({a: 1, b: 2})
+        store = described_class.new({ a: 1, b: 2 })
         expect(store.keys).to contain_exactly(:a, :b)
       end
 
       it "does not autovivify a key named :keys" do
-        store = described_class.new({a: 1})
+        store = described_class.new({ a: 1 })
         store.keys
         expect(store.to_h.keys).not_to include(:keys)
       end
@@ -31,12 +31,12 @@ RSpec.describe Flexor do
 
     describe "#values" do
       it "returns the values of the store" do
-        store = described_class.new({a: 1, b: 2})
+        store = described_class.new({ a: 1, b: 2 })
         expect(store.values).to contain_exactly(1, 2)
       end
 
       it "does not autovivify a key named :values" do
-        store = described_class.new({a: 1})
+        store = described_class.new({ a: 1 })
         store.values
         expect(store.to_h.keys).not_to include(:values)
       end
@@ -44,13 +44,13 @@ RSpec.describe Flexor do
 
     describe "#size / #length" do
       it "returns the number of keys in the store" do
-        store = described_class.new({a: 1, b: 2, c: 3})
+        store = described_class.new({ a: 1, b: 2, c: 3 })
         expect(store.size).to eq 3
         expect(store.length).to eq 3
       end
 
       it "does not autovivify a key named :size or :length" do
-        store = described_class.new({a: 1})
+        store = described_class.new({ a: 1 })
         store.size
         store.length
         expect(store.to_h.keys).not_to include(:size, :length)
@@ -59,20 +59,20 @@ RSpec.describe Flexor do
 
     describe "#key? / #has_key?" do
       context "when the key exists" do
-        subject { described_class.new({name: "alice"}) }
+        subject { described_class.new({ name: "alice" }) }
 
         it "is truthy" do
           expect(subject.key?(:name)).to be true
-          expect(subject.has_key?(:name)).to be true
+          expect(subject.key?(:name)).to be true
         end
       end
 
       context "when the key does not exist" do
-        subject { described_class.new({name: "alice"}) }
+        subject { described_class.new({ name: "alice" }) }
 
         it "is falsey" do
           expect(subject.key?(:missing)).to be false
-          expect(subject.has_key?(:missing)).to be false
+          expect(subject.key?(:missing)).to be false
         end
 
         it "does not autovivify the queried key" do
@@ -123,7 +123,7 @@ RSpec.describe Flexor do
 
   describe "method name collisions" do
     context "methods defined on Object (class, freeze, hash, object_id, send, display)" do
-      subject { described_class.new({class: "fancy", freeze: "cold"}) }
+      subject { described_class.new({ class: "fancy", freeze: "cold" }) }
 
       it "are not intercepted by method_missing" do
         expect(subject.class).to eq described_class
@@ -137,7 +137,7 @@ RSpec.describe Flexor do
     end
 
     context "methods defined on Flexor (to_h, to_s, nil?, ==)" do
-      subject { described_class.new({to_h: "override", to_s: "nope", "nil?": "not nil"}) }
+      subject { described_class.new({ to_h: "override", to_s: "nope", nil?: "not nil" }) }
 
       it "are not intercepted by method_missing" do
         expect(subject.to_h).to be_a Hash
@@ -147,7 +147,7 @@ RSpec.describe Flexor do
       it "values stored under those keys are accessible via bracket" do
         expect(subject[:to_h]).to eq "override"
         expect(subject[:to_s]).to eq "nope"
-        expect(subject[:"nil?"]).to eq "not nil"
+        expect(subject[:nil?]).to eq "not nil"
       end
     end
   end

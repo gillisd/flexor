@@ -1,6 +1,6 @@
 RSpec.describe Flexor do
   describe "method_missing edge cases" do
-    subject { described_class.new({foo: "bar"}) }
+    subject { described_class.new({ foo: "bar" }) }
 
     it "calling a method with arguments (store.foo(1)) raises NoMethodError" do
       expect { subject.foo(1) }.to raise_error(NoMethodError)

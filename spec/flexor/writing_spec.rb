@@ -19,7 +19,7 @@ RSpec.describe Flexor do
 
   describe "writing a level 2 property via method" do
     context "the level 1 property has been set" do
-      subject { described_class.new({rank: {first: 1}}) }
+      subject { described_class.new({ rank: { first: 1 } }) }
 
       it "writes and reads the written property" do
         subject.rank.second = 2
@@ -45,7 +45,7 @@ RSpec.describe Flexor do
 
   describe "writing a level 2 property via hash accessor" do
     context "the level 1 property has been set" do
-      subject { described_class.new({rank: {first: 1}}) }
+      subject { described_class.new({ rank: { first: 1 } }) }
 
       it "writes and reads the written property" do
         subject[:rank][:second] = 2
@@ -90,7 +90,7 @@ RSpec.describe Flexor do
     subject { described_class.new }
 
     context "stores the raw hash" do
-      before { subject.config = {db: {host: "localhost"}} }
+      before { subject.config = { db: { host: "localhost" } } }
 
       it "bracket access returns a Hash, not a Flexor" do
         expect(subject[:config]).to be_a Hash
@@ -99,7 +99,7 @@ RSpec.describe Flexor do
     end
 
     context "method chaining on the assigned hash" do
-      before { subject.config = {db: {host: "localhost"}} }
+      before { subject.config = { db: { host: "localhost" } } }
 
       it "raises NoMethodError (Hash does not support dynamic methods)" do
         expect { subject.config.db }.to raise_error(NoMethodError)
@@ -119,7 +119,7 @@ RSpec.describe Flexor do
 
     context "with an array of hashes" do
       it "stores raw hashes (does not auto-convert)" do
-        subject.items = [{id: 1}, {id: 2}]
+        subject.items = [{ id: 1 }, { id: 2 }]
         expect(subject.items.first).to be_a Hash
         expect(subject.items.first).not_to be_a described_class
       end
@@ -127,7 +127,7 @@ RSpec.describe Flexor do
   end
 
   describe "overwriting" do
-    subject { described_class.new({user: {name: "alice", age: 30}}) }
+    subject { described_class.new({ user: { name: "alice", age: 30 } }) }
 
     it "replacing a nested subtree with a scalar stores the scalar" do
       subject.user = "gone"
@@ -142,7 +142,7 @@ RSpec.describe Flexor do
     it "replacing a scalar with a nested write vivifies the new path" do
       subject.user.name = "bob"
       subject.user = "flat"
-      subject.user = {first: "carol"}
+      subject.user = { first: "carol" }
       expect(subject[:user]).to be_a Hash
     end
 

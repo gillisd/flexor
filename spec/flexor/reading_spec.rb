@@ -1,7 +1,7 @@
 RSpec.describe Flexor do
   describe "reading a level 1 property via method" do
     context "the property does exist" do
-      subject { described_class.new({foo: "bar"}) }
+      subject { described_class.new({ foo: "bar" }) }
 
       it "reads the correct property" do
         expect(subject.foo).to eq "bar"
@@ -16,7 +16,7 @@ RSpec.describe Flexor do
       end
 
       it "returns a value that == nil" do
-        expect(subject.foo == nil).to be true
+        expect(subject.foo == nil).to be true # rubocop:disable Style/NilComparison
       end
 
       it "does not return the nil singleton" do
@@ -31,7 +31,7 @@ RSpec.describe Flexor do
 
   describe "reading a level 1 property via hash accessor" do
     context "the property does exist" do
-      subject { described_class.new({foo: "bar"}) }
+      subject { described_class.new({ foo: "bar" }) }
 
       it "reads the correct property" do
         expect(subject[:foo]).to eq "bar"
@@ -46,7 +46,7 @@ RSpec.describe Flexor do
       end
 
       it "returns a value that == nil" do
-        expect(subject[:foo] == nil).to be true
+        expect(subject[:foo] == nil).to be true # rubocop:disable Style/NilComparison
       end
 
       it "does not return the nil singleton" do
@@ -61,7 +61,7 @@ RSpec.describe Flexor do
 
   describe "reading a level 2 property via method" do
     context "the level 1 property does exist" do
-      subject { described_class.new({user: {name: "alice"}}) }
+      subject { described_class.new({ user: { name: "alice" } }) }
 
       context "the level 2 property does exist" do
         it "reads the correct property" do
@@ -93,7 +93,7 @@ RSpec.describe Flexor do
 
   describe "reading a level 2 property via hash accessor" do
     context "the level 1 property does exist" do
-      subject { described_class.new({user: {name: "alice"}}) }
+      subject { described_class.new({ user: { name: "alice" } }) }
 
       context "the level 2 property does exist" do
         it "reads the correct property" do
@@ -125,7 +125,7 @@ RSpec.describe Flexor do
 
   describe "reading at arbitrary depth (3+ levels)" do
     context "all levels set" do
-      subject { described_class.new({a: {b: {c: {d: "deep"}}}}) }
+      subject { described_class.new({ a: { b: { c: { d: "deep" } } } }) }
 
       it "reads the correct property" do
         expect(subject.a.b.c.d).to eq "deep"
@@ -148,7 +148,7 @@ RSpec.describe Flexor do
   end
 
   describe "method vs bracket access equivalence" do
-    subject { described_class.new({foo: "bar"}) }
+    subject { described_class.new({ foo: "bar" }) }
 
     context "reading the same key via method and bracket returns the same value" do
       it "for a set property" do
