@@ -9,3 +9,5 @@ gem "rubocop-md"
 gem "rubocop-performance"
 gem "rubocop-rake"
 gem "rubocop-rspec"
+
+gem "debug", "~> 1.11"
