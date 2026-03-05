@@ -54,7 +54,7 @@ RSpec.describe Flexor do
     end
 
     it "does not cache methods that already exist on Flexor" do
-      store = described_class.new({ to_h: "override", "nil?": "nope" })
+      store = described_class.new({ to_h: "override", nil?: "nope" })
       store.to_h
       expect(store.singleton_methods).not_to include(:to_h)
     end

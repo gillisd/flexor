@@ -220,13 +220,26 @@ class Flexor
     end
   end
 
-  def method_missing(name, *args, &block)
+  def method_missing(name, *args, &block) # rubocop:disable Metrics/CyclomaticComplexity
     return super if block
 
     case [name, args]
     in /^[^=]+=$/, [arg]
-      self[name.to_s.chomp("=").to_sym] = arg
+      key = name.to_s.chomp("=").to_sym
+      define_singleton_method(name) do |val = nil, &blk|
+        raise NoMethodError, "undefined method '#{name}' for #{inspect}" if blk
+
+        self[key] = val
+      end
+      self[key] = arg
     in _, []
+      unless frozen?
+        define_singleton_method(name) do |*a, &blk|
+          raise NoMethodError, "undefined method '#{name}' for #{inspect}" if blk || !a.empty?
+
+          self[name]
+        end
+      end
       self[name]
     else
       super
