@@ -73,5 +73,24 @@ RSpec.describe Flexor do
       store.user.name = "bob"
       expect(store.user.name).to eq "bob"
     end
+
+    it "does not cache getter on first read of unset key (autovivification)" do
+      store = described_class.new
+      store.missing
+      expect(store.singleton_methods).not_to include(:missing)
+    end
+
+    it "caches getter on second read of same key" do
+      store = described_class.new
+      store.missing
+      store.missing
+      expect(store.singleton_methods).to include(:missing)
+    end
+
+    it "caches getter immediately for constructor-populated keys" do
+      store = described_class.new({ name: "alice" })
+      store.name
+      expect(store.singleton_methods).to include(:name)
+    end
   end
 end
