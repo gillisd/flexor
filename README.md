@@ -78,6 +78,23 @@ store.items = [{ id: 1 }, { id: 2 }]
 store.items.first.id   # => 1
 ```
 
+### Deep Merge
+
+`merge` returns a new Flexor; `merge!` mutates in place. Both deep merge nested structures:
+
+```ruby
+defaults = Flexor.new({ db: { host: "localhost", port: 5432 }, log: "info" })
+overrides = { db: { port: 3306, name: "mydb" }, log: "debug" }
+
+config = defaults.merge(overrides)
+config.db.host   # => "localhost"  (preserved from defaults)
+config.db.port   # => 3306         (overridden)
+config.db.name   # => "mydb"       (added)
+config.log       # => "debug"      (overridden)
+```
+
+### Raw Storage
+
 If you need to store a raw Hash without conversion, use `set_raw`:
 
 ```ruby

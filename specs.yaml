@@ -135,6 +135,23 @@ Flexor#set_raw:
   stores an array of hashes without vivification
   stores scalars normally
 
+Flexor#merge:
+  returns a new Flexor with the merged contents
+  does not modify the original
+  overwrites scalar values
+  deep merges nested hashes
+  deep merges multiple levels
+  replaces a nested subtree with a scalar when incoming is scalar
+  replaces a scalar with a nested hash
+  accepts a Flexor as argument
+  vivifies hashes in the merged result
+
+Flexor#merge!:
+  modifies the receiver in place
+  returns self
+  deep merges nested hashes in place
+  accepts a Flexor as argument
+
 overwriting:
   replacing a nested subtree with a scalar:
     the scalar is stored
