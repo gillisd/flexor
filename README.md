@@ -30,7 +30,7 @@ From JSON:
 
 ```ruby
 store = Flexor.from_json('{"api": {"version": 2}}')
-store.api.version   # => 2
+store.api.version # => 2
 ```
 
 ### Accessing Properties
@@ -49,7 +49,7 @@ Nested chaining works to any depth:
 store = Flexor.new
 store.config.database.host = "localhost"
 store.config.database.port = 5432
-store.config.database.host   # => "localhost"
+store.config.database.host # => "localhost"
 ```
 
 ### Safe Chaining
@@ -58,8 +58,8 @@ Accessing an unset property returns a nil-like Flexor instead of raising. You ca
 
 ```ruby
 store = Flexor.new
-store.anything.deeply.nested.nil?   # => true
-store.missing == nil                # => true
+store.anything.deeply.nested.nil? # => true
+store.missing.nil? # => true
 store.missing.to_s                  # => ""
 "Hello #{store.ghost}"              # => "Hello "
 ```
@@ -99,18 +99,18 @@ config.log       # => "debug"      (overridden)
 
 ```ruby
 store = Flexor.new({ user: { name: "Alice" }, tags: ["admin"] })
-store.to_json   # => '{"user":{"name":"Alice"},"tags":["admin"]}'
+store.to_json # => '{"user":{"name":"Alice"},"tags":["admin"]}'
 
 # Round-trips with from_json
-Flexor.from_json(store.to_json).user.name   # => "Alice"
+Flexor.from_json(store.to_json).user.name # => "Alice"
 ```
 
 ### Deleting Keys
 
 ```ruby
 store = Flexor.new({ a: 1, b: 2, c: 3 })
-store.delete(:b)   # => 2
-store.to_h          # => { a: 1, c: 3 }
+store.delete(:b) # => 2
+store.to_h # => { a: 1, c: 3 }
 ```
 
 ### Raw Storage
@@ -120,7 +120,7 @@ If you need to store a raw Hash without conversion, use `set_raw`:
 ```ruby
 store = Flexor.new
 store.set_raw(:headers, { "Content-Type" => "application/json" })
-store[:headers].class   # => Hash
+store[:headers].class # => Hash
 ```
 
 ### Converting Back
@@ -129,7 +129,7 @@ store[:headers].class   # => Hash
 
 ```ruby
 original = { users: [{ name: "Bob" }], meta: { version: 1 } }
-Flexor.new(original).to_h == original   # => true
+Flexor.new(original).to_h == original # => true
 ```
 
 Autovivified-but-never-written paths don't appear in `to_h`:
@@ -182,9 +182,11 @@ store.select { |_k, v| v > 1 }
 ### Equality
 
 ```ruby
-Flexor.new({ x: 1 }) == Flexor.new({ x: 1 })   # => true
-Flexor.new({ x: 1 }) == { x: 1 }                # => true
-Flexor.new == nil                                 # => true
+a = Flexor.new({ x: 1 })
+b = Flexor.new({ x: 1 })
+a == b        # => true
+a == { x: 1 } # => true
+Flexor.new.nil? # => true
 ```
 
 ### Freezing
@@ -204,7 +206,7 @@ store.new_key = 1  # => FrozenError
 original = Flexor.new({ a: 1 })
 copy = original.dup
 copy.b = 2
-original.key?(:b)   # => false
+original.key?(:b) # => false
 ```
 
 ## Development

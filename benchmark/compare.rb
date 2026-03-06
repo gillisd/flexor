@@ -5,11 +5,11 @@ $LOAD_PATH.unshift("/tmp/hashie/lib")
 require "hashie"
 Hashie.logger = Logger.new(File::NULL)
 
-FLAT_HASH = { name: "alice", age: 30, city: "NYC" }
-NESTED_HASH = { user: { name: "alice", address: { city: "NYC", zip: "10001" } } }
-DEEP_HASH = { a: { b: { c: { d: { e: "deep" } } } } }
+FLAT_HASH = { name: "alice", age: 30, city: "NYC" }.freeze
+NESTED_HASH = { user: { name: "alice", address: { city: "NYC", zip: "10001" } } }.freeze
+DEEP_HASH = { a: { b: { c: { d: { e: "deep" } } } } }.freeze
 
-puts "Ruby #{RUBY_VERSION} (YJIT: #{defined?(RubyVM::YJIT) && RubyVM::YJIT.enabled? ? "enabled" : "disabled"})"
+puts "Ruby #{RUBY_VERSION} (YJIT: #{defined?(RubyVM::YJIT) && RubyVM::YJIT.enabled? ? 'enabled' : 'disabled'})"
 puts "Flexor #{Flexor::VERSION}"
 puts "Hashie #{Hashie::VERSION}"
 puts
