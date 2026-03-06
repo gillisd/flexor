@@ -3,36 +3,6 @@ require_relative "flexor/version"
 class Flexor
   class Error < StandardError; end
 
-  # Recursively converts a plain Hash into an autovivifying Hash
-  # where every nested Hash becomes a FlexStore.
-  def self.vivify(original_hash)
-    # The default_proc is the heart of autovivification:
-    # accessing a missing key auto-creates a new FlexStore.
-    new_hash = Hash.new do |hash, key|
-      hash[key] = new({}, root: false)
-    end
-
-    original_hash.each do |key, value|
-      new_hash[key] = case value
-                      when Hash  then new(value, root: false)
-                      when Array then vivify_array(value)
-                      else value
-                      end
-    end
-
-    new_hash
-  end
-
-  def self.vivify_array(array)
-    array.map do |item|
-      case item
-      when Hash then new(item, root: false)
-      when Array then vivify_array(item)
-      else item
-      end
-    end
-  end
-
   def self.from_json(json)
     require "json"
     JSON.parse(json, symbolize_names: true)
@@ -43,15 +13,11 @@ class Flexor
     other.is_a?(self)
   end
 
-  class << self
-    private :vivify, :vivify_array
-  end
-
   def initialize(hash = {}, root: true)
     raise ArgumentError, "expected a Hash, got #{hash.class}" unless hash.is_a?(Hash)
 
     @root  = root
-    @store = self.class.send(:vivify, hash)
+    @store = vivify(hash)
   end
 
   def initialize_copy(original)
@@ -203,11 +169,33 @@ class Flexor
 
   private
 
+  def vivify(hash)
+    new_hash = Hash.new do |h, key|
+      h[key] = self.class.new({}, root: false)
+    end
+
+    hash.each do |key, value|
+      new_hash[key] = vivify_value(value)
+    end
+
+    new_hash
+  end
+
   def vivify_value(value)
     case value
     when Hash then self.class.new(value, root: false)
-    when Array then self.class.send(:vivify_array, value)
+    when Array then vivify_array(value)
     else value
+    end
+  end
+
+  def vivify_array(array)
+    array.map do |item|
+      case item
+      when Hash then self.class.new(item, root: false)
+      when Array then vivify_array(item)
+      else item
+      end
     end
   end
 
