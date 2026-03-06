@@ -43,11 +43,15 @@ class Flexor
     other.is_a?(self)
   end
 
+  class << self
+    private :vivify, :vivify_array
+  end
+
   def initialize(hash = {}, root: true)
     raise ArgumentError, "expected a Hash, got #{hash.class}" unless hash.is_a?(Hash)
 
     @root  = root
-    @store = self.class.vivify(hash)
+    @store = self.class.send(:vivify, hash)
   end
 
   def initialize_copy(original)
@@ -202,7 +206,7 @@ class Flexor
   def vivify_value(value)
     case value
     when Hash then self.class.new(value, root: false)
-    when Array then self.class.vivify_array(value)
+    when Array then self.class.send(:vivify_array, value)
     else value
     end
   end
