@@ -25,4 +25,32 @@ RSpec.describe Flexor do
       expect(store.to_h).to eq({ a: 1, c: 3 })
     end
   end
+
+  describe "#clear" do
+    it "removes all keys" do
+      store = described_class.new({ a: 1, b: 2, c: 3 })
+      store.clear
+      expect(store.to_h).to eq({})
+    end
+
+    it "returns self" do
+      store = described_class.new({ a: 1 })
+      expect(store.clear).to equal store
+    end
+
+    it "makes the store nil-like" do
+      store = described_class.new({ a: 1 })
+      store.clear
+      expect(store).to be_nil
+      expect(store).to be_empty
+    end
+
+    it "allows new data after clearing" do
+      store = described_class.new({ old: "data" })
+      store.clear
+      store.new_key = "fresh"
+      expect(store.new_key).to eq "fresh"
+      expect(store.key?(:old)).to be false
+    end
+  end
 end

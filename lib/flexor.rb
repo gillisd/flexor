@@ -41,6 +41,11 @@ class Flexor
     @store.delete(key)
   end
 
+  def clear
+    @store.clear
+    self
+  end
+
   def to_ary
     nil
   end
