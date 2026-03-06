@@ -45,10 +45,6 @@ class Flexor
     nil
   end
 
-  def to_a
-    @store.to_a
-  end
-
   def freeze
     @store.freeze
     super

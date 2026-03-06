@@ -105,8 +105,10 @@ RSpec.describe Flexor do
     end
 
     it "prevents splat expansion from treating Flexor as an array" do
-      arr = Array(subject)
-      expect(arr).to be_a Array
+      arr = [subject, "other"]
+      first, second = *arr
+      expect(first).to be_a described_class
+      expect(second).to eq "other"
     end
   end
 
