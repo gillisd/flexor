@@ -12,5 +12,6 @@ gem "rubocop-rspec"
 
 gem "benchmark"
 gem "benchmark-ips"
-gem "ostruct"
 gem "debug", "~> 1.11"
+gem "ostruct"
+gem "rdoc"
