@@ -1,4 +1,4 @@
-desc "Run performance benchmarks (requires benchmark-ips gem, optionally hashie gem)"
+desc "Run performance benchmarks (optionally install hashie gem for comparison)"
 task :benchmark do
-  ruby "--yjit", "benchmark/compare.rb"
+  ruby "--yjit", "-rbundler/setup", "benchmark/compare.rb"
 end

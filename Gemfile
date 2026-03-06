@@ -10,4 +10,7 @@ gem "rubocop-performance"
 gem "rubocop-rake"
 gem "rubocop-rspec"
 
+gem "benchmark"
+gem "benchmark-ips"
+gem "ostruct"
 gem "debug", "~> 1.11"
