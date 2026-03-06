@@ -1,9 +1,6 @@
-require "zeitwerk"
+require_relative "flexor/version"
 
 class Flexor
-  LOADER = Zeitwerk::Loader.for_gem
-  LOADER.setup
-
   class Error < StandardError; end
 
   # Recursively converts a plain Hash into an autovivifying Hash
