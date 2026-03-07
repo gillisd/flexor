@@ -381,3 +381,9 @@ RSpec/ExpectChange:
 
 RSpec/NamedSubject:
   Enabled: false
+
+# PROJECT SPECIFIC:
+#
+# Behavior is very intricate here and warrants separation
+RSpec/SpecFilePathFormat:
+  Enabled: false
