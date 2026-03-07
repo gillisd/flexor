@@ -11,6 +11,10 @@ rescue LoadError
   warn "Hashie not installed skipping Mash benchmarks. Install with: gem install hashie"
 end
 
+def hashie_report(bench, label, &block)
+  bench.report(label, &block) if HAS_HASHIE
+end
+
 FLAT_HASH = { name: "alice", age: 30, city: "NYC" }.freeze
 NESTED_HASH = { user: { name: "alice", address: { city: "NYC", zip: "10001" } } }.freeze
 DEEP_HASH = { a: { b: { c: { d: { e: "deep" } } } } }.freeze
@@ -101,12 +105,7 @@ Benchmark.ips do |x|
     f = Flexor.new
     f[:config] = { db: { host: "localhost" } }
   }
-  if HAS_HASHIE
-    x.report("Mash []= hash") {
-      m = Hashie::Mash.new
-      m[:config] = { db: { host: "localhost" } }
-    }
-  end
+  hashie_report(x, "Mash []= hash") { Hashie::Mash.new.tap { |m| m[:config] = { db: { host: "localhost" } } } }
   x.compare!
 end
 
@@ -121,12 +120,7 @@ Benchmark.ips do |x|
     f = Flexor.new
     f.a.b.c.d = "deep"
   }
-  if HAS_HASHIE
-    x.report("Mash a!.b!.c!.d=") {
-      m = Hashie::Mash.new
-      m.a!.b!.c!.d = "deep"
-    }
-  end
+  hashie_report(x, "Mash a!.b!.c!.d=") { Hashie::Mash.new.tap { |m| m.a!.b!.c!.d = "deep" } }
   x.compare!
 end
 
