@@ -15,6 +15,31 @@ RSpec.describe Flexor do
     end
   end
 
+  describe "error message clarity" do
+    context "with constructor ArgumentError" do
+      it "includes the actual class in the error message" do
+        expect { described_class.new("string") }.to raise_error(
+          ArgumentError, /String/
+        )
+      end
+    end
+
+    context "with NoMethodError from cached getter" do
+      it "includes the method name after caching" do
+        store = described_class.new({ foo: "bar" })
+        store.foo # cache the getter
+        expect { store.foo(1) }.to raise_error(NoMethodError, /foo/)
+      end
+    end
+
+    context "with NoMethodError from method_missing" do
+      it "includes the method name before caching" do
+        store = described_class.new({ foo: "bar" })
+        expect { store.foo(1) }.to raise_error(NoMethodError, /foo/)
+      end
+    end
+  end
+
   describe "#respond_to?" do
     subject { described_class.new }
 

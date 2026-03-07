@@ -294,6 +294,17 @@ hash-like query methods:
     when the key does not exist:
       is falsey
       does not autovivify the queried key
+  "#has_key?":
+    works identically to key? for existing keys
+    works identically to key? for missing keys
+    does not autovivify the queried key
+  non-standard key types:
+    with numeric keys:
+      stores and retrieves values with integer keys
+    with boolean keys:
+      stores and retrieves values with boolean keys
+    with empty string keys:
+      stores and retrieves values with empty string keys
 
 symbol vs string keys:
   method access uses symbol keys (store.foo writes to and reads from :foo)
@@ -316,6 +327,14 @@ method_missing edge cases:
   calling a method with arguments (store.foo(1)) raises NoMethodError
   calling a method with a block raises NoMethodError
   setter with too many arguments (store.foo = 1, 2) raises NoMethodError
+
+error message clarity:
+  with constructor ArgumentError:
+    includes the actual class in the error message
+  with NoMethodError from cached getter:
+    includes the method name after caching
+  with NoMethodError from method_missing:
+    includes the method name before caching
 
 "#respond_to?":
   is truthy for any arbitrary method name
@@ -361,6 +380,12 @@ freeze:
     prevents further writes
     reads still work
     autovivification raises on frozen store
+    merge! on a frozen Flexor raises FrozenError
+    delete on a frozen Flexor raises FrozenError
+    clear on a frozen Flexor raises FrozenError
+    set_raw on a frozen Flexor raises FrozenError
+    dup of a frozen Flexor returns an unfrozen copy
+    clone of a frozen Flexor returns a frozen copy
 
 method caching:
   defines a singleton method after first read
@@ -377,15 +402,6 @@ method caching:
   does not cache getter on first read of unset key (autovivification)
   caches getter on second read of same key
   caches getter immediately for constructor-populated keys
-
-freeze (extended):
-  when freezing a Flexor:
-    merge! on a frozen Flexor raises FrozenError
-    delete on a frozen Flexor raises FrozenError
-    clear on a frozen Flexor raises FrozenError
-    set_raw on a frozen Flexor raises FrozenError
-    dup of a frozen Flexor returns an unfrozen copy
-    clone of a frozen Flexor returns a frozen copy
 
 Flexor.from_json (edge cases):
   with a JSON array root:
@@ -410,28 +426,7 @@ Flexor#set_raw (edge cases):
   with method access on a raw hash:
     method access on a raw Hash value returns the Hash (not a Flexor)
   with interaction with method cache:
-    cached getter still returns the raw Hash
-
-"#has_key?":
-  works identically to key? for existing keys
-  works identically to key? for missing keys
-  does not autovivify the queried key
-
-non-standard key types:
-  with numeric keys:
-    stores and retrieves values with integer keys
-  with boolean keys:
-    stores and retrieves values with boolean keys
-  with empty string keys:
-    stores and retrieves values with empty string keys
-
-error message clarity:
-  with constructor ArgumentError:
-    includes the actual class in the error message
-  with NoMethodError from cached getter:
-    includes the method name after caching
-  with NoMethodError from method_missing:
-    includes the method name before caching
+    returns the raw Hash on subsequent reads
 
 serialization beyond JSON:
   with Marshal:

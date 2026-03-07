@@ -83,6 +83,50 @@ RSpec.describe Flexor do
     end
   end
 
+  describe "#has_key?" do
+    it "works identically to key? for existing keys" do
+      store = described_class.new({ name: "alice" })
+      expect(store.send(:has_key?, :name)).to be true
+    end
+
+    it "works identically to key? for missing keys" do
+      store = described_class.new({ name: "alice" })
+      expect(store.send(:has_key?, :missing)).to be false
+    end
+
+    it "does not autovivify the queried key" do
+      store = described_class.new
+      store.send(:has_key?, :phantom)
+      expect(store.to_h.keys).not_to include(:phantom)
+    end
+  end
+
+  describe "non-standard key types" do
+    context "with numeric keys" do
+      it "stores and retrieves values with integer keys" do
+        store = described_class.new
+        store[0] = "zero"
+        expect(store[0]).to eq "zero"
+      end
+    end
+
+    context "with boolean keys" do
+      it "stores and retrieves values with boolean keys" do
+        store = described_class.new
+        store[true] = "yes"
+        expect(store[true]).to eq "yes"
+      end
+    end
+
+    context "with empty string keys" do
+      it "stores and retrieves values with empty string keys" do
+        store = described_class.new
+        store[""] = "blank"
+        expect(store[""]).to eq "blank"
+      end
+    end
+  end
+
   describe "symbol vs string keys" do
     it "method access uses symbol keys (store.foo writes to and reads from :foo)" do
       store = described_class.new

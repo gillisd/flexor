@@ -10,7 +10,7 @@ RSpec.describe Flexor do
     end
 
     context "with interaction with method cache" do
-      it "cached getter still returns the raw Hash" do
+      it "returns the raw Hash on subsequent reads" do
         store = described_class.new
         store.set_raw(:config, { db: "pg" })
         store.config # trigger caching

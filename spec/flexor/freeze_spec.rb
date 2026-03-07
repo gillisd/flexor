@@ -1,6 +1,24 @@
 RSpec.describe Flexor do
   describe "freeze" do
     context "when freezing a Flexor" do
+      it "prevents further writes" do
+        store = described_class.new({ a: 1 })
+        store.freeze
+        expect { store.b = 2 }.to raise_error(FrozenError)
+      end
+
+      it "reads still work" do
+        store = described_class.new({ a: 1 })
+        store.freeze
+        expect(store.a).to eq 1
+      end
+
+      it "autovivification raises on frozen store" do
+        store = described_class.new
+        store.freeze
+        expect { store[:missing] }.to raise_error(FrozenError)
+      end
+
       it "merge! on a frozen Flexor raises FrozenError" do
         store = described_class.new({ a: 1 })
         store.freeze
