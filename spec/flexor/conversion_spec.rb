@@ -239,12 +239,13 @@ RSpec.describe Flexor do
   describe "#deconstruct" do
     it "returns the values of the store for array-style pattern matching" do
       store = described_class.new({ x: 1, y: -2 })
-      expect(store.deconstruct).to all(be_a(Integer))
+      matched = (store in [Integer, Integer])
+      expect(matched).to be true
     end
 
     it "supports variable binding in array patterns" do
       store = described_class.new({ x: 1, y: -2 })
-      x, y = store.deconstruct
+      store => [x, y]
       expect(x).to eq 1
       expect(y).to eq(-2)
     end
