@@ -23,9 +23,19 @@ Flexor.new:
     stores the nil value directly
   with a non-hash argument:
     raises ArgumentError
-  when comparing root vs non-root:
+  when comparing root vs non-root (via .new):
     defaults to root: true
     can be set to root: false
+
+Flexor.[]:
+  with a Hash:
+    creates a Flexor with the given data
+  with a JSON string:
+    parses JSON and creates a Flexor
+  with no arguments:
+    creates an empty Flexor
+  with a non-Hash, non-String argument:
+    raises ArgumentError
 
 Flexor.from_json:
   with valid flat JSON:

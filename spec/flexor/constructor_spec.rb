@@ -103,7 +103,7 @@ RSpec.describe Flexor do
       end
     end
 
-    context "when comparing root vs non-root" do
+    context "when comparing root vs non-root (via .new)" do
       it "defaults to root: true" do
         store = described_class.new
         expect(store.instance_variable_get(:@root)).to be true
@@ -112,6 +112,38 @@ RSpec.describe Flexor do
       it "can be set to root: false" do
         store = described_class.new({}, root: false)
         expect(store.instance_variable_get(:@root)).to be false
+      end
+    end
+  end
+
+  describe ".[]" do
+    context "with a Hash" do
+      it "creates a Flexor with the given data" do
+        store = described_class[name: "alice"]
+        expect(store).to be_a described_class
+        expect(store.name).to eq "alice"
+      end
+    end
+
+    context "with a JSON string" do
+      it "parses JSON and creates a Flexor" do
+        store = described_class['{"name":"alice"}']
+        expect(store).to be_a described_class
+        expect(store.name).to eq "alice"
+      end
+    end
+
+    context "with no arguments" do
+      it "creates an empty Flexor" do
+        store = described_class[]
+        expect(store).to be_a described_class
+        expect(store).to be_nil
+      end
+    end
+
+    context "with a non-Hash, non-String argument" do
+      it "raises ArgumentError" do
+        expect { described_class[42] }.to raise_error(ArgumentError)
       end
     end
   end

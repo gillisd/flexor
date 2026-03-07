@@ -14,6 +14,14 @@ class Flexor
   include Serialization
   include Vivification
 
+  def self.[](input = {})
+    case input
+    when String then from_json(input)
+    when Hash then new(input)
+    else raise ArgumentError, "expected a String or Hash, got #{input.class}"
+    end
+  end
+
   def self.from_json(json)
     require "json"
     JSON.parse(json, symbolize_names: true)
