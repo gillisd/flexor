@@ -174,6 +174,7 @@ Flexor#to_json:
   serializes arrays
   round-trips with from_json
   serializes an empty Flexor as an empty object
+  raises when a value is not JSON-serializable (pending)
 
 Flexor#nil?:
   is truthy on an unset property (empty Flexor)
@@ -436,6 +437,8 @@ serialization beyond JSON:
   with Marshal:
     round-trips via Marshal.dump and Marshal.load (pending)
     preserves autovivification after Marshal round-trip (pending)
+  with YAML:
+    round-trips via YAML.dump and YAML.safe_load (pending)
 
 version:
   has a version number

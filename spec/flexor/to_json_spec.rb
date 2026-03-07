@@ -31,5 +31,7 @@ RSpec.describe Flexor do
       store = described_class.new
       expect(store.to_json).to eq "{}"
     end
+
+    it "raises when a value is not JSON-serializable"
   end
 end

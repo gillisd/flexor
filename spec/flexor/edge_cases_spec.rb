@@ -41,5 +41,9 @@ RSpec.describe Flexor do
 
       it "preserves autovivification after Marshal round-trip"
     end
+
+    context "with YAML" do
+      it "round-trips via YAML.dump and YAML.safe_load"
+    end
   end
 end
