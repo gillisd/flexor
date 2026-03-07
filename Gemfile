@@ -5,6 +5,7 @@ gemspec
 gem "rake"
 gem "rspec", "~> 3.0"
 gem "rubocop"
+gem "rubocop-claude"
 gem "rubocop-md"
 gem "rubocop-performance"
 gem "rubocop-rake"
