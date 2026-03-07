@@ -103,14 +103,16 @@ RSpec.describe Flexor do
     end
 
     context "with cross-access" do
-      it "store.foo and store[:foo] access the same value" do
+      it "store.foo writes a value readable via store[:foo]" do
         store = described_class.new
         store.foo = "bar"
         expect(store[:foo]).to eq "bar"
+      end
 
-        store2 = described_class.new
-        store2[:baz] = "qux"
-        expect(store2.baz).to eq "qux"
+      it "store[:baz] writes a value readable via store.baz" do
+        store = described_class.new
+        store[:baz] = "qux"
+        expect(store.baz).to eq "qux"
       end
 
       it 'store.foo and store["foo"] do NOT access the same value' do

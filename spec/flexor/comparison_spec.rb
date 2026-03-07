@@ -1,4 +1,11 @@
 RSpec.describe Flexor do
+  def case_when_match?(value, pattern)
+    case value
+    when pattern then true
+    else false
+    end
+  end
+
   describe "#nil?" do
     it "is truthy on an unset property (empty Flexor)" do
       store = described_class.new
@@ -112,11 +119,7 @@ RSpec.describe Flexor do
     context "when used in a case/when on a Flexor value" do
       it "matches against a scalar when values are equal" do
         store = described_class.new({ status: "active" })
-        matched = case store.status
-                  when "active" then true
-                  else false
-                  end
-        expect(matched).to be true
+        expect(case_when_match?(store.status, "active")).to be true
       end
 
       it "matches against nil when property is unset" do
@@ -133,29 +136,15 @@ RSpec.describe Flexor do
     context "when used as a class in case/when" do
       it "matches a Flexor instance" do
         store = described_class.new
-        matched = case store
-                  when described_class then true
-                  else false
-                  end
-        expect(matched).to be true
+        expect(case_when_match?(store, described_class)).to be true
       end
 
       it "does not match a plain Hash" do
-        value = { a: 1 }
-        matched = case value
-                  when described_class then true
-                  else false
-                  end
-        expect(matched).to be false
+        expect(case_when_match?({ a: 1 }, described_class)).to be false
       end
 
       it "does not match nil" do
-        value = nil
-        matched = case value
-                  when described_class then true
-                  else false
-                  end
-        expect(matched).to be false
+        expect(case_when_match?(nil, described_class)).to be false
       end
     end
   end

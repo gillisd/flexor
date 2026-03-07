@@ -1,4 +1,8 @@
 RSpec.describe Flexor do
+  def run_threads(count = 10, &block)
+    Array.new(count) { |i| Thread.new(i, &block) }.each(&:join)
+  end
+
   describe "array handling end-to-end" do
     context "when constructed with arrays" do
       it "hashes inside arrays are converted to Flexors" do
@@ -68,32 +72,17 @@ RSpec.describe Flexor do
   describe "thread safety" do
     it "concurrent reads on the same Flexor do not raise" do
       store = described_class.new({ a: 1, b: 2, c: 3 })
-      threads = Array.new(10) do
-        Thread.new {
-          100.times {
-            store.a
-            store.b
-            store.c
-          }
-        }
-      end
-      expect { threads.each(&:join) }.not_to raise_error
+      expect { run_threads { 100.times { [store.a, store.b, store.c] } } }.not_to raise_error
     end
 
     it "concurrent writes to different keys documents expected behavior" do
       store = described_class.new
-      threads = Array.new(10) do |i|
-        Thread.new { store[:"key_#{i}"] = i }
-      end
-      expect { threads.each(&:join) }.not_to raise_error
+      expect { run_threads(10) { |i| store[:"key_#{i}"] = i } }.not_to raise_error
     end
 
     it "concurrent autovivification documents expected behavior" do
       store = described_class.new
-      threads = Array.new(10) do |i|
-        Thread.new { _ = store[:"auto_#{i}"] }
-      end
-      expect { threads.each(&:join) }.not_to raise_error
+      expect { run_threads(10) { |i| _ = store[:"auto_#{i}"] } }.not_to raise_error
     end
   end
 
