@@ -1,5 +1,6 @@
 require_relative "flexor/version"
 require_relative "flexor/hash_delegation"
+require_relative "flexor/serialization"
 require_relative "flexor/vivification"
 
 ##
@@ -10,6 +11,7 @@ class Flexor
   class Error < StandardError; end
 
   include HashDelegation
+  include Serialization
   include Vivification
 
   def self.from_json(json)

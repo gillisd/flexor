@@ -430,10 +430,14 @@ Flexor#set_raw (edge cases):
 
 serialization beyond JSON:
   with Marshal:
-    round-trips via Marshal.dump and Marshal.load (pending)
-    preserves autovivification after Marshal round-trip (pending)
+    round-trips via Marshal.dump and Marshal.load
+    preserves autovivification after Marshal round-trip
+    preserves nested Flexor structure after round-trip
+    preserves the root flag after round-trip
   with YAML:
-    round-trips via YAML.dump and YAML.safe_load (pending)
+    round-trips via YAML.dump and YAML.safe_load
+    preserves autovivification after YAML round-trip
+    preserves nested Flexor structure after round-trip
 
 version:
   has a version number
