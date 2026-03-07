@@ -16,7 +16,7 @@ RSpec.describe Flexor do
       end
 
       it "returns a value that == nil" do
-        expect(subject.foo == nil).to be true # rubocop:disable Style/NilComparison
+        expect(subject.foo.nil?).to be true
       end
 
       it "does not return the nil singleton" do
@@ -46,7 +46,7 @@ RSpec.describe Flexor do
       end
 
       it "returns a value that == nil" do
-        expect(subject[:foo] == nil).to be true # rubocop:disable Style/NilComparison
+        expect(subject[:foo].nil?).to be true
       end
 
       it "does not return the nil singleton" do

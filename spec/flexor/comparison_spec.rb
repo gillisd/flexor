@@ -31,7 +31,7 @@ RSpec.describe Flexor do
       subject { described_class.new }
 
       it "against nil is truthy" do
-        expect(subject.missing == nil).to be true # rubocop:disable Style/NilComparison
+        expect(subject.missing.nil?).to be true
       end
 
       it "against a non-nil value is falsey" do
@@ -75,7 +75,7 @@ RSpec.describe Flexor do
       subject { described_class.new({ gone: nil }) }
 
       it "against nil is truthy (via NilClass#==)" do
-        expect(subject.gone == nil).to be true # rubocop:disable Style/NilComparison
+        expect(subject.gone.nil?).to be true
       end
 
       it "against a non-nil value is falsey (via NilClass#==)" do
@@ -98,7 +98,7 @@ RSpec.describe Flexor do
     context "symmetry" do
       it "documents whether nil == empty Flexor is symmetric" do
         store = described_class.new
-        flexor_equals_nil = (store == nil) # rubocop:disable Style/NilComparison
+        flexor_equals_nil = store.nil?
         # NilClass#== does not know about Flexor, so reverse may differ
         nil_equals_flexor = NilClass.instance_method(:==).bind_call(nil, store)
         expect(flexor_equals_nil).to be true
@@ -124,7 +124,7 @@ RSpec.describe Flexor do
         # NilClass#=== checks identity, not nil?, so case/when nil
         # won't match a nil-like Flexor. Use == nil or nil? instead.
         expect(store.missing.nil?).to be true
-        expect(store.missing == nil).to be true # rubocop:disable Style/NilComparison
+        expect(store.missing.nil?).to be true
       end
     end
   end

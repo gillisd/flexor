@@ -6,7 +6,7 @@ class Flexor
   def self.from_json(json)
     require "json"
     JSON.parse(json, symbolize_names: true)
-      .then { new it }
+        .then { new it }
   end
 
   def self.===(other)
@@ -210,7 +210,7 @@ class Flexor
     end
   end
 
-  def method_missing(name, *args, &block) # rubocop:disable Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
+  def method_missing(name, *args, &block)
     return super if block
 
     case [name, args]
