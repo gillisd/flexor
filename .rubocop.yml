@@ -390,3 +390,5 @@ RSpec/SpecFilePathFormat:
 
 RSpec/NestedGroups:
   Enabled: false
+RSpec/MultipleExpectations:
+  Max: 3
