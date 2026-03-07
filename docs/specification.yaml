@@ -1,0 +1,441 @@
+Flexor.new:
+  with no arguments:
+    creates an empty store
+    is a root Flexor
+  with an empty hash:
+    creates an empty store
+  with a flat hash:
+    stores all key-value pairs
+    allows method access on each key
+    allows bracket access on each key
+  with a nested hash:
+    recursively converts nested hashes into Flexors
+    allows method access at every level
+    allows bracket access at every level
+  with a deeply nested hash (3+ levels):
+    allows method access at every level
+    allows bracket access at every level
+  with a hash containing arrays:
+    preserves arrays of scalars
+    converts hashes inside arrays into Flexors
+    preserves non-hash elements in mixed arrays
+  with a hash containing nil values:
+    stores the nil value directly
+  with a non-hash argument:
+    raises ArgumentError
+  when comparing root vs non-root:
+    defaults to root: true
+    can be set to root: false
+
+Flexor.from_json:
+  with valid flat JSON:
+    creates a Flexor with symbolized keys
+    allows method access on parsed values
+  with nested JSON:
+    recursively converts nested objects
+    allows method chaining on nested values
+  with JSON containing arrays:
+    preserves arrays
+    converts objects inside arrays into Flexors
+  with invalid JSON:
+    raises a parse error
+
+reading a level 1 property via method:
+  when the property exists:
+    reads the correct property
+  when the property does not exist:
+    returns a value where nil? is true
+    returns a value that == nil
+    does not return the nil singleton
+    returns a Flexor
+
+reading a level 1 property via hash accessor:
+  when the property exists:
+    reads the correct property
+  when the property does not exist:
+    returns a value where nil? is true
+    returns a value that == nil
+    does not return the nil singleton
+    returns a Flexor
+
+reading a level 2 property via method:
+  when the level 1 property exists:
+    when the level 2 property exists:
+      reads the correct property
+    when the level 2 property does not exist:
+      returns a value where nil? is true
+  when the level 1 property does not exist:
+    returns a value where nil? is true
+    the returned value is itself a Flexor that supports further chaining
+
+reading a level 2 property via hash accessor:
+  when the level 1 property exists:
+    when the level 2 property exists:
+      reads the correct property
+    when the level 2 property does not exist:
+      returns a value where nil? is true
+  when the level 1 property does not exist:
+    returns a value where nil? is true
+    the returned value is itself a Flexor that supports further chaining
+
+reading at arbitrary depth (3+ levels):
+  when all levels are set:
+    reads the correct property
+  when no levels are set:
+    returns a value where nil? is true at every intermediate level
+    supports chaining to any depth without error
+
+method vs bracket access equivalence:
+  writing via method and reading via bracket returns the written value
+  writing via bracket and reading via method returns the written value
+  when reading the same key via method and bracket:
+    for a set property
+    for an unset property
+
+writing a level 1 property via method:
+  writes and reads the written property
+
+writing a level 1 property via hash accessor:
+  writes and reads the written property
+
+writing a level 2 property via method:
+  when the level 1 property has been set:
+    writes and reads the written property
+  when the level 1 property has not been set:
+    vivifies the level 1 property
+    writes and reads the written property
+
+writing a level 2 property via hash accessor:
+  when the level 1 property has been set:
+    writes and reads the written property
+  when the level 1 property has not been set:
+    vivifies the level 1 property
+    writes and reads the written property
+
+writing at arbitrary depth (3+ levels):
+  when no intermediate levels are set:
+    vivifies every intermediate level
+    writes and reads the written property
+
+assigning a plain hash via setter:
+  when assigning a hash:
+    bracket access returns a Flexor, not a Hash
+    method chaining works on the assigned value
+
+assigning an array via setter:
+  with an array of scalars:
+    stores and retrieves the array
+  with an array of hashes:
+    auto-converts inner hashes to Flexors
+
+overwriting:
+  replacing a nested subtree with a scalar stores the scalar
+  replacing a nested subtree with a scalar removes the old subtree
+  replacing a scalar with a nested write vivifies the new path
+  replacing a scalar with nil makes the property read as nil
+
+Flexor#set_raw:
+  stores a hash without vivification
+  stores an array of hashes without vivification
+  stores scalars normally
+
+Flexor#merge:
+  returns a new Flexor with the merged contents
+  does not modify the original
+  overwrites scalar values
+  deep merges nested hashes
+  deep merges multiple levels
+  replaces a nested subtree with a scalar when incoming is scalar
+  replaces a scalar with a nested hash
+  accepts a Flexor as argument
+  vivifies hashes in the merged result
+
+Flexor#merge!:
+  modifies the receiver in place
+  returns self
+  deep merges nested hashes in place
+  accepts a Flexor as argument
+
+Flexor#delete:
+  removes the key and returns the value
+  returns nil for a missing key
+  removes nested Flexors
+  does not affect other keys
+
+Flexor#clear:
+  removes all keys
+  returns self
+  makes the store nil-like
+  allows new data after clearing
+
+Flexor#to_json:
+  serializes scalar values
+  serializes nested Flexors
+  serializes arrays
+  round-trips with from_json
+  serializes an empty Flexor as an empty object
+
+Flexor#nil?:
+  is truthy on an unset property (empty Flexor)
+  is falsey on a property with a value
+  is truthy on a property set explicitly to nil (via NilClass#nil?)
+  is truthy on a root Flexor with no data
+  is falsey on a root Flexor with data
+
+Flexor#==:
+  when comparing an unset property (empty Flexor):
+    against nil is truthy
+    against a non-nil value is falsey
+  when comparing two Flexors:
+    is truthy when both have identical contents
+    is falsey when contents differ
+    is truthy when both are empty
+  when comparing a Flexor against a Hash:
+    is truthy when keys and values are identical
+    is falsey when keys and values are NOT identical
+  when comparing a property set explicitly to nil:
+    against nil is truthy (via NilClass#==)
+    against a non-nil value is falsey (via NilClass#==)
+  when comparing a scalar value:
+    against an identical scalar is truthy (via String#==)
+    against a different scalar is falsey (via String#==)
+  when checking symmetry:
+    documents whether nil == empty Flexor is symmetric
+
+Flexor#===:
+  when used in a case/when on a Flexor value:
+    matches against a scalar when values are equal
+    matches against nil when property is unset
+
+Flexor.===:
+  when used as a class in case/when:
+    matches a Flexor instance
+    does not match a plain Hash
+    does not match nil
+
+Flexor#to_s:
+  when the property has been set:
+    returns the string representation for a scalar value
+    returns the string representation for a nested value
+  when the property has NOT been set:
+    returns an empty string to match nil.to_s behavior
+    returns an empty string, not actual nil
+    is indistinguishable from nil in string interpolation
+    is indistinguishable from nil when passed to puts
+  with multiple levels of depth:
+    returns empty string at every unset level
+    is indistinguishable from nil in puts at any depth
+  when comparing root vs non-root:
+    root with data returns the store's string representation
+    root without data returns empty string
+    non-root with data returns the store's string representation
+    non-root without data returns empty string
+
+Flexor#inspect:
+  on a root Flexor with values returns the hash inspection
+  on a root Flexor without values returns the empty hash inspection
+  on an unset property (empty non-root Flexor) is indistinguishable from inspecting nil
+  on a non-root Flexor with values returns the hash inspection
+
+Flexor#to_ary:
+  returns nil to prevent puts from treating Flexor as an array
+  prevents splat expansion from treating Flexor as an array
+
+Flexor#to_h:
+  returns a plain hash with scalar values
+  recursively converts nested Flexors back to hashes
+  preserves arrays of scalars
+  recursively converts Flexors inside arrays
+  converts empty nested Flexors to nil
+  with round-trip conversion:
+    flat hash survives new -> to_h unchanged
+    nested hash survives new -> to_h unchanged
+    deeply nested hash survives new -> to_h unchanged
+    hash with arrays survives new -> to_h unchanged
+  with autovivified but never written paths:
+    does not include phantom keys
+
+Flexor#deconstruct_keys:
+  with a Flexor containing values:
+    supports pattern matching via case/in
+    extracts matching keys
+    returns only requested keys
+  with nested Flexors:
+    supports nested pattern matching
+  with no keys requested:
+    returns the entire store
+  with an empty Flexor:
+    returns an empty hash
+
+Flexor#deconstruct:
+  returns the values of the store for array-style pattern matching
+  supports variable binding in array patterns
+  returns an empty array for an empty Flexor
+  preserves nested Flexors for recursive pattern matching
+
+hash-like query methods:
+  "#empty?":
+    is truthy when the store has no data
+    is falsey when the store has data
+    does not autovivify a key named :empty?
+  "#keys":
+    returns the keys of the store
+    does not autovivify a key named :keys
+  "#values":
+    returns the values of the store
+    does not autovivify a key named :values
+  "#size / #length":
+    returns the number of keys in the store
+    does not autovivify a key named :size or :length
+  "#key? / #has_key?":
+    when the key exists:
+      is truthy
+    when the key does not exist:
+      is falsey
+      does not autovivify the queried key
+
+symbol vs string keys:
+  method access uses symbol keys (store.foo writes to and reads from :foo)
+  bracket access with a symbol reads and writes using the symbol key
+  bracket access with a string reads and writes using the string key
+  with cross-access:
+    store.foo writes a value readable via store[:foo]
+    store[:baz] writes a value readable via store.baz
+    store.foo and store["foo"] do NOT access the same value
+
+method name collisions:
+  with methods defined on Object (class, freeze, hash, object_id, send, display):
+    are not intercepted by method_missing
+    values stored under those keys are accessible via bracket
+  with methods defined on Flexor (to_h, to_s, nil?, ==):
+    are not intercepted by method_missing
+    values stored under those keys are accessible via bracket
+
+method_missing edge cases:
+  calling a method with arguments (store.foo(1)) raises NoMethodError
+  calling a method with a block raises NoMethodError
+  setter with too many arguments (store.foo = 1, 2) raises NoMethodError
+
+"#respond_to?":
+  is truthy for any arbitrary method name
+  is truthy for method names that also exist on Object
+  is truthy with include_private: true
+
+"#respond_to_missing?":
+  returns true for any method name
+
+array handling end-to-end:
+  when constructed with arrays:
+    hashes inside arrays are converted to Flexors
+    scalars inside arrays are preserved
+    nested arrays of hashes are converted recursively
+  when assigning directly:
+    assigning an array of hashes auto-converts inner hashes
+  when reading from arrays stored in Flexor:
+    array elements are accessible via standard array methods
+
+autovivification side effects:
+  reading an unset property creates the key in the store (default_proc behavior)
+  the created key holds an empty Flexor
+  chaining reads on unset properties creates keys at every intermediate level
+  documents whether reads leave traces in to_h
+
+thread safety:
+  concurrent reads on the same Flexor do not raise
+  concurrent writes to different keys documents expected behavior
+  concurrent autovivification documents expected behavior
+
+dup and clone:
+  when duping a Flexor:
+    returns a new Flexor with the same contents
+    modifications to the dup do not affect the original
+  when cloning a Flexor:
+    returns a new Flexor with the same contents
+    modifications to the clone do not affect the original
+  with deep nesting:
+    dup is shallow (nested Flexors are shared)
+
+freeze:
+  when freezing a Flexor:
+    prevents further writes
+    reads still work
+    autovivification raises on frozen store
+
+method caching:
+  defines a singleton method after first read
+  defines a singleton method after first write
+  cached getter returns the correct value
+  cached getter reflects updated values
+  cached setter writes correctly
+  cached getter on missing key returns nil-like Flexor
+  cached getter still raises NoMethodError with a block
+  cached getter still raises NoMethodError with arguments
+  does not cache methods that already exist on Flexor
+  caching does not leak between instances
+  works correctly with nested chaining
+  does not cache getter on first read of unset key (autovivification)
+  caches getter on second read of same key
+  caches getter immediately for constructor-populated keys
+
+freeze (extended):
+  when freezing a Flexor:
+    merge! on a frozen Flexor raises FrozenError
+    delete on a frozen Flexor raises FrozenError
+    clear on a frozen Flexor raises FrozenError
+    set_raw on a frozen Flexor raises FrozenError
+    dup of a frozen Flexor returns an unfrozen copy
+    clone of a frozen Flexor returns a frozen copy
+
+Flexor.from_json (edge cases):
+  with a JSON array root:
+    raises ArgumentError for an Array
+  with a JSON null root:
+    raises ArgumentError for nil
+  with a JSON scalar root:
+    raises ArgumentError for a String
+
+Flexor#merge! (nil values):
+  with nil values:
+    nil overwrites an existing scalar
+    nil overwrites an existing nested Flexor
+    nil inside a nested hash is preserved during deep merge
+
+Flexor#merge (nil values):
+  with nil values:
+    nil overwrites an existing scalar in the new Flexor
+    nil inside a nested hash is preserved during deep merge
+
+Flexor#set_raw (edge cases):
+  with method access on a raw hash:
+    method access on a raw Hash value returns the Hash (not a Flexor)
+  with interaction with method cache:
+    cached getter still returns the raw Hash
+
+"#has_key?":
+  works identically to key? for existing keys
+  works identically to key? for missing keys
+  does not autovivify the queried key
+
+non-standard key types:
+  with numeric keys:
+    stores and retrieves values with integer keys
+  with boolean keys:
+    stores and retrieves values with boolean keys
+  with empty string keys:
+    stores and retrieves values with empty string keys
+
+error message clarity:
+  with constructor ArgumentError:
+    includes the actual class in the error message
+  with NoMethodError from cached getter:
+    includes the method name after caching
+  with NoMethodError from method_missing:
+    includes the method name before caching
+
+serialization beyond JSON:
+  with Marshal:
+    round-trips via Marshal.dump and Marshal.load (pending)
+    preserves autovivification after Marshal round-trip (pending)
+
+version:
+  has a version number

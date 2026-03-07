@@ -152,26 +152,4 @@ RSpec.describe Flexor do
       end
     end
   end
-
-  describe "enumeration" do
-    context "when using each / map / select" do
-      subject { described_class.new({ a: 1, b: 2, c: 3 }) }
-
-      it "delegates to the underlying store" do
-        keys = []
-        subject.each_key { |k| keys << k }
-        expect(keys).to contain_exactly(:a, :b, :c)
-      end
-
-      it "map works on the store" do
-        result = subject.map { |k, _v| k }
-        expect(result).to contain_exactly(:a, :b, :c)
-      end
-
-      it "select works on the store" do
-        result = subject.select { |_k, v| v.is_a?(Integer) && v > 1 }
-        expect(result.map(&:first)).to contain_exactly(:b, :c)
-      end
-    end
-  end
 end

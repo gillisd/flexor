@@ -26,21 +26,5 @@ class Flexor
       @store.key?(key)
     end
     alias has_key? key?
-
-    def each(&)
-      @store.each(&)
-    end
-
-    def each_key(&)
-      @store.each_key(&)
-    end
-
-    def map(&)
-      @store.map(&)
-    end
-
-    def select(&)
-      @store.select(&)
-    end
   end
 end
