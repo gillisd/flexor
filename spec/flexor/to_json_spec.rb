@@ -32,6 +32,9 @@ RSpec.describe Flexor do
       expect(store.to_json).to eq "{}"
     end
 
-    it "raises when a value is not JSON-serializable"
+    it "raises when a value is not JSON-serializable" do
+      store = described_class.new({ val: Float::NAN })
+      expect { store.to_json }.to raise_error(JSON::GeneratorError)
+    end
   end
 end
