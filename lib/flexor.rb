@@ -1,4 +1,6 @@
 require_relative "flexor/version"
+require_relative "flexor/hash_delegation"
+require_relative "flexor/vivification"
 
 ##
 # A Hash-like data store with autovivifying nested access, nil-safe
@@ -6,6 +8,9 @@ require_relative "flexor/version"
 # access.
 class Flexor
   class Error < StandardError; end
+
+  include HashDelegation
+  include Vivification
 
   def self.from_json(json)
     require "json"
@@ -98,47 +103,6 @@ class Flexor
     @store.empty?
   end
 
-  def empty?
-    @store.empty?
-  end
-
-  def keys
-    @store.keys
-  end
-
-  def values
-    @store.values
-  end
-
-  def size
-    @store.size
-  end
-
-  def length
-    @store.length
-  end
-
-  def key?(key)
-    @store.key?(key)
-  end
-  alias has_key? key?
-
-  def each(&)
-    @store.each(&)
-  end
-
-  def each_key(&)
-    @store.each_key(&)
-  end
-
-  def map(&)
-    @store.map(&)
-  end
-
-  def select(&)
-    @store.select(&)
-  end
-
   def merge!(other)
     other = other.to_h if other.is_a?(Flexor)
     other.each do |key, value|
@@ -173,46 +137,6 @@ class Flexor
   end
 
   private
-
-  def vivify(hash)
-    new_hash = Hash.new do |h, key|
-      h[key] = self.class.new({}, root: false)
-    end
-
-    hash.each do |key, value|
-      new_hash[key] = vivify_value(value)
-    end
-
-    new_hash
-  end
-
-  def vivify_value(value)
-    case value
-    when Hash then self.class.new(value, root: false)
-    when Array then vivify_array(value)
-    else value
-    end
-  end
-
-  def vivify_array(array)
-    array.map do |item|
-      case item
-      when Hash then self.class.new(item, root: false)
-      when Array then vivify_array(item)
-      else item
-      end
-    end
-  end
-
-  def recurse_to_h(object)
-    case object
-    in Array then object.map { recurse_to_h(it) }
-    in ^(self.class)
-      converted = object.to_h
-      converted.empty? ? nil : converted
-    else object
-    end
-  end
 
   def method_missing(name, *args, &block)
     return super if block
