@@ -387,3 +387,6 @@ RSpec/NamedSubject:
 # Behavior is very intricate here and warrants separation
 RSpec/SpecFilePathFormat:
   Enabled: false
+
+RSpec/NestedGroups:
+  Enabled: false
