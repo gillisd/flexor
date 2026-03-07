@@ -1,5 +1,9 @@
 require_relative "flexor/version"
 
+##
+# A Hash-like data store with autovivifying nested access, nil-safe
+# chaining, and seamless conversion between hashes and method-style
+# access.
 class Flexor
   class Error < StandardError; end
 
@@ -214,25 +218,36 @@ class Flexor
     return super if block
 
     case [name, args]
-    in /^[^=]+=$/, [arg]
-      key = name.to_s.chomp("=").to_sym
-      define_singleton_method(name) do |val = nil, &blk|
-        raise NoMethodError, "undefined method '#{name}' for #{inspect}" if blk
+    in /^[^=]+=$/, [arg] then write_via_method(name, arg)
+    in _, [] then read_via_method(name)
+    else super
+    end
+  end
 
-        self[key] = val
-      end
-      self[key] = arg
-    in _, []
-      if !frozen? && @store.key?(name)
-        define_singleton_method(name) do |*a, &blk|
-          raise NoMethodError, "undefined method '#{name}' for #{inspect}" if blk || !a.empty?
+  def write_via_method(name, arg)
+    key = name.to_s.chomp("=").to_sym
+    cache_setter(name, key)
+    self[key] = arg
+  end
 
-          self[name]
-        end
-      end
+  def read_via_method(name)
+    cache_getter(name) if !frozen? && @store.key?(name)
+    self[name]
+  end
+
+  def cache_setter(name, key)
+    define_singleton_method(name) do |val = nil, &blk|
+      raise NoMethodError, "undefined method '#{name}' for #{inspect}" if blk
+
+      self[key] = val
+    end
+  end
+
+  def cache_getter(name)
+    define_singleton_method(name) do |*a, &blk|
+      raise NoMethodError, "undefined method '#{name}' for #{inspect}" if blk || !a.empty?
+
       self[name]
-    else
-      super
     end
   end
 end
