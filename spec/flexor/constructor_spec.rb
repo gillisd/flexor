@@ -103,7 +103,7 @@ RSpec.describe Flexor do
       end
     end
 
-    context "root vs non-root" do
+    context "when comparing root vs non-root" do
       it "defaults to root: true" do
         store = described_class.new
         expect(store.instance_variable_get(:@root)).to be true

@@ -1,6 +1,6 @@
 RSpec.describe Flexor do
   describe "reading a level 1 property via method" do
-    context "the property does exist" do
+    context "when the property exists" do
       subject { described_class.new({ foo: "bar" }) }
 
       it "reads the correct property" do
@@ -8,7 +8,7 @@ RSpec.describe Flexor do
       end
     end
 
-    context "the property does NOT exist" do
+    context "when the property does not exist" do
       subject { described_class.new({}) }
 
       it "returns a value where nil? is true" do
@@ -30,7 +30,7 @@ RSpec.describe Flexor do
   end
 
   describe "reading a level 1 property via hash accessor" do
-    context "the property does exist" do
+    context "when the property exists" do
       subject { described_class.new({ foo: "bar" }) }
 
       it "reads the correct property" do
@@ -38,7 +38,7 @@ RSpec.describe Flexor do
       end
     end
 
-    context "the property does NOT exist" do
+    context "when the property does not exist" do
       subject { described_class.new({}) }
 
       it "returns a value where nil? is true" do
@@ -60,23 +60,23 @@ RSpec.describe Flexor do
   end
 
   describe "reading a level 2 property via method" do
-    context "the level 1 property does exist" do
+    context "when the level 1 property exists" do
       subject { described_class.new({ user: { name: "alice" } }) }
 
-      context "the level 2 property does exist" do
+      context "when the level 2 property exists" do
         it "reads the correct property" do
           expect(subject.user.name).to eq "alice"
         end
       end
 
-      context "the level 2 property does NOT exist" do
+      context "when the level 2 property does not exist" do
         it "returns a value where nil? is true" do
           expect(subject.user.missing).to be_nil
         end
       end
     end
 
-    context "the level 1 property does NOT exist" do
+    context "when the level 1 property does not exist" do
       subject { described_class.new({}) }
 
       it "returns a value where nil? is true" do
@@ -92,23 +92,23 @@ RSpec.describe Flexor do
   end
 
   describe "reading a level 2 property via hash accessor" do
-    context "the level 1 property does exist" do
+    context "when the level 1 property exists" do
       subject { described_class.new({ user: { name: "alice" } }) }
 
-      context "the level 2 property does exist" do
+      context "when the level 2 property exists" do
         it "reads the correct property" do
           expect(subject[:user][:name]).to eq "alice"
         end
       end
 
-      context "the level 2 property does NOT exist" do
+      context "when the level 2 property does not exist" do
         it "returns a value where nil? is true" do
           expect(subject[:user][:missing]).to be_nil
         end
       end
     end
 
-    context "the level 1 property does NOT exist" do
+    context "when the level 1 property does not exist" do
       subject { described_class.new({}) }
 
       it "returns a value where nil? is true" do
@@ -124,7 +124,7 @@ RSpec.describe Flexor do
   end
 
   describe "reading at arbitrary depth (3+ levels)" do
-    context "all levels set" do
+    context "when all levels are set" do
       subject { described_class.new({ a: { b: { c: { d: "deep" } } } }) }
 
       it "reads the correct property" do
@@ -132,7 +132,7 @@ RSpec.describe Flexor do
       end
     end
 
-    context "no levels set" do
+    context "when no levels are set" do
       subject { described_class.new({}) }
 
       it "returns a value where nil? is true at every intermediate level" do
@@ -150,7 +150,7 @@ RSpec.describe Flexor do
   describe "method vs bracket access equivalence" do
     subject { described_class.new({ foo: "bar" }) }
 
-    context "reading the same key via method and bracket returns the same value" do
+    context "when reading the same key via method and bracket" do
       it "for a set property" do
         expect(subject.foo).to eq subject[:foo]
       end

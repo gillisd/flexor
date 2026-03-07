@@ -102,7 +102,7 @@ RSpec.describe Flexor do
       expect(store["foo"]).to eq "bar"
     end
 
-    context "cross-access" do
+    context "with cross-access" do
       it "store.foo and store[:foo] access the same value" do
         store = described_class.new
         store.foo = "bar"
@@ -122,7 +122,7 @@ RSpec.describe Flexor do
   end
 
   describe "method name collisions" do
-    context "methods defined on Object (class, freeze, hash, object_id, send, display)" do
+    context "with methods defined on Object (class, freeze, hash, object_id, send, display)" do
       subject { described_class.new({ class: "fancy", freeze: "cold" }) }
 
       it "are not intercepted by method_missing" do
@@ -136,7 +136,7 @@ RSpec.describe Flexor do
       end
     end
 
-    context "methods defined on Flexor (to_h, to_s, nil?, ==)" do
+    context "with methods defined on Flexor (to_h, to_s, nil?, ==)" do
       subject { described_class.new({ to_h: "override", to_s: "nope", nil?: "not nil" }) }
 
       it "are not intercepted by method_missing" do

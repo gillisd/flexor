@@ -95,7 +95,7 @@ RSpec.describe Flexor do
       end
     end
 
-    context "symmetry" do
+    context "when checking symmetry" do
       it "documents whether nil == empty Flexor is symmetric" do
         store = described_class.new
         flexor_equals_nil = store.nil?

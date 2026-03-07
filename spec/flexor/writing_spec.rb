@@ -18,7 +18,7 @@ RSpec.describe Flexor do
   end
 
   describe "writing a level 2 property via method" do
-    context "the level 1 property has been set" do
+    context "when the level 1 property has been set" do
       subject { described_class.new({ rank: { first: 1 } }) }
 
       it "writes and reads the written property" do
@@ -27,7 +27,7 @@ RSpec.describe Flexor do
       end
     end
 
-    context "the level 1 property has NOT been set" do
+    context "when the level 1 property has not been set" do
       subject { described_class.new }
 
       it "vivifies the level 1 property" do
@@ -44,7 +44,7 @@ RSpec.describe Flexor do
   end
 
   describe "writing a level 2 property via hash accessor" do
-    context "the level 1 property has been set" do
+    context "when the level 1 property has been set" do
       subject { described_class.new({ rank: { first: 1 } }) }
 
       it "writes and reads the written property" do
@@ -53,7 +53,7 @@ RSpec.describe Flexor do
       end
     end
 
-    context "the level 1 property has NOT been set" do
+    context "when the level 1 property has not been set" do
       subject { described_class.new }
 
       it "vivifies the level 1 property" do
@@ -72,7 +72,7 @@ RSpec.describe Flexor do
   describe "writing at arbitrary depth (3+ levels)" do
     subject { described_class.new }
 
-    context "no intermediate levels set" do
+    context "when no intermediate levels are set" do
       it "vivifies every intermediate level" do
         subject.a.b.c = "deep"
         expect(subject.a).to be_a described_class
@@ -89,7 +89,7 @@ RSpec.describe Flexor do
   describe "assigning a plain hash via setter" do
     subject { described_class.new }
 
-    context "auto-converts the hash to a Flexor" do
+    context "when assigning a hash" do
       before { subject.config = { db: { host: "localhost" } } }
 
       it "bracket access returns a Flexor, not a Hash" do

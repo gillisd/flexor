@@ -1,6 +1,6 @@
 RSpec.describe Flexor do
   describe "array handling end-to-end" do
-    context "via constructor" do
+    context "when constructed with arrays" do
       it "hashes inside arrays are converted to Flexors" do
         store = described_class.new({ items: [{ id: 1 }] })
         expect(store.items.first).to be_a described_class
@@ -18,7 +18,7 @@ RSpec.describe Flexor do
       end
     end
 
-    context "via direct assignment" do
+    context "when assigning directly" do
       it "assigning an array of hashes auto-converts inner hashes" do
         store = described_class.new
         store.items = [{ id: 1 }, { id: 2 }]
@@ -27,7 +27,7 @@ RSpec.describe Flexor do
       end
     end
 
-    context "reading from arrays stored in Flexor" do
+    context "when reading from arrays stored in Flexor" do
       it "array elements are accessible via standard array methods" do
         store = described_class.new({ tags: ["a", "b", "c"] })
         expect(store.tags.first).to eq "a"
@@ -98,7 +98,7 @@ RSpec.describe Flexor do
   end
 
   describe "dup and clone" do
-    context "duping a Flexor" do
+    context "when duping a Flexor" do
       it "returns a new Flexor with the same contents" do
         original = described_class.new({ a: 1, b: 2 })
         copy = original.dup
@@ -115,7 +115,7 @@ RSpec.describe Flexor do
       end
     end
 
-    context "cloning a Flexor" do
+    context "when cloning a Flexor" do
       it "returns a new Flexor with the same contents" do
         original = described_class.new({ a: 1, b: 2 })
         copy = original.clone
@@ -132,7 +132,7 @@ RSpec.describe Flexor do
       end
     end
 
-    context "deep nesting" do
+    context "with deep nesting" do
       it "dup is shallow (nested Flexors are shared)" do
         original = described_class.new({ nested: { a: 1 } })
         copy = original.dup
@@ -143,7 +143,7 @@ RSpec.describe Flexor do
   end
 
   describe "freeze" do
-    context "freezing a Flexor" do
+    context "when freezing a Flexor" do
       it "prevents further writes" do
         store = described_class.new({ a: 1 })
         store.freeze
@@ -165,7 +165,7 @@ RSpec.describe Flexor do
   end
 
   describe "enumeration" do
-    context "each / map / select" do
+    context "when using each / map / select" do
       subject { described_class.new({ a: 1, b: 2, c: 3 }) }
 
       it "delegates to the underlying store" do

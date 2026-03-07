@@ -36,7 +36,7 @@ RSpec.describe Flexor do
       end
     end
 
-    context "at multiple levels of depth" do
+    context "with multiple levels of depth" do
       subject { described_class.new }
 
       it "returns empty string at every unset level" do
@@ -50,7 +50,7 @@ RSpec.describe Flexor do
       end
     end
 
-    context "root vs non-root" do
+    context "when comparing root vs non-root" do
       it "root with data returns the store's string representation" do
         store = described_class.new({ a: 1 })
         expect(store.to_s).to eq store.instance_variable_get(:@store).to_s
@@ -147,7 +147,7 @@ RSpec.describe Flexor do
       expect(result[:empty_nested]).to be_nil
     end
 
-    context "round-trip" do
+    context "with round-trip conversion" do
       it "flat hash survives new -> to_h unchanged" do
         h = { a: 1, b: "two", c: true }
         expect(described_class.new(h).to_h).to eq h
@@ -226,7 +226,7 @@ RSpec.describe Flexor do
       end
     end
 
-    context "on an empty Flexor" do
+    context "with an empty Flexor" do
       subject { described_class.new }
 
       it "returns an empty hash" do
