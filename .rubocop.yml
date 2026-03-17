@@ -399,3 +399,7 @@ RSpec/MultipleExpectations:
 # Prefer the explicit &block rather than &
 Naming/BlockForwarding:
   Enabled: false
+
+# This has bugs and is causing specs to fail when autocorrected
+Performance/RedundantMerge:
+  Enabled: false

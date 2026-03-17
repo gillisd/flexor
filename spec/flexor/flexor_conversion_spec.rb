@@ -39,9 +39,15 @@ RSpec.describe Flexor do
     context "with multiple levels of depth" do
       subject { described_class.new }
 
-      it "returns empty string at every unset level" do
+      it "returns empty string at level 1" do
         expect(subject.a.to_s).to eq ""
+      end
+
+      it "returns empty string at level 2" do
         expect(subject.a.b.to_s).to eq ""
+      end
+
+      it "returns empty string at level 3" do
         expect(subject.a.b.c.to_s).to eq ""
       end
 
@@ -113,20 +119,36 @@ RSpec.describe Flexor do
   end
 
   describe "#to_h" do
-    it "returns a plain hash with scalar values" do
-      store = described_class.new({ a: 1, b: "two" })
-      result = store.to_h
-      expect(result).to eq({ a: 1, b: "two" })
-      expect(result).to be_a Hash
-      expect(result).not_to be_a described_class
+    context "with a flat hash" do
+      subject { described_class.new({ a: 1, b: "two" }) }
+
+      it "returns the expected data" do
+        expect(subject.to_h).to eq({ a: 1, b: "two" })
+      end
+
+      it "returns a plain Hash" do
+        expect(subject.to_h).to be_a Hash
+      end
+
+      it "does not return a Flexor" do
+        expect(subject.to_h).not_to be_a described_class
+      end
     end
 
-    it "recursively converts nested Flexors back to hashes" do
-      store = described_class.new({ user: { name: "alice" } })
-      result = store.to_h
-      expect(result).to eq({ user: { name: "alice" } })
-      expect(result[:user]).to be_a Hash
-      expect(result[:user]).not_to be_a described_class
+    context "with a nested hash" do
+      subject { described_class.new({ user: { name: "alice" } }) }
+
+      it "recursively converts with correct data" do
+        expect(subject.to_h).to eq({ user: { name: "alice" } })
+      end
+
+      it "converts nested Flexors to plain Hashes" do
+        expect(subject.to_h[:user]).to be_a Hash
+      end
+
+      it "nested values are not Flexors" do
+        expect(subject.to_h[:user]).not_to be_a described_class
+      end
     end
 
     it "preserves arrays of scalars" do
