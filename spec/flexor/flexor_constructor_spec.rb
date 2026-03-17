@@ -78,15 +78,19 @@ RSpec.describe Flexor do
         expect(subject.items.first.id).to eq 1
       end
 
-      it "preserves scalar elements in mixed arrays" do
+      it "preserves integers in mixed arrays" do
         store = described_class.new({ mix: [1, { a: 2 }, "three"] })
         expect(store.mix[0]).to eq 1
+      end
+
+      it "preserves strings in mixed arrays" do
+        store = described_class.new({ mix: [1, { a: 2 }, "three"] })
         expect(store.mix[2]).to eq "three"
       end
 
       it "converts hash elements in mixed arrays" do
-        store = described_class.new({ mix: [1, { a: 2 }, "three"] })
-        expect(store.mix[1]).to be_a described_class
+        described_class.new({ mix: [1, { a: 2 }, "three"] }).mix[1] => { a: }
+        expect(a).to eq 2
       end
     end
 
@@ -100,8 +104,11 @@ RSpec.describe Flexor do
     end
 
     context "with a non-hash argument" do
-      it "raises ArgumentError for strings and integers" do
+      it "raises ArgumentError for strings" do
         expect { described_class.new("string") }.to raise_error(ArgumentError)
+      end
+
+      it "raises ArgumentError for integers" do
         expect { described_class.new(42) }.to raise_error(ArgumentError)
       end
 

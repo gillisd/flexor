@@ -32,9 +32,13 @@ RSpec.describe Flexor do
     end
 
     context "when reading from arrays stored in Flexor" do
-      it "first and last elements are accessible" do
+      it "first element is accessible" do
         store = described_class.new({ tags: ["a", "b", "c"] })
         expect(store.tags.first).to eq "a"
+      end
+
+      it "last element is accessible" do
+        store = described_class.new({ tags: ["a", "b", "c"] })
         expect(store.tags.last).to eq "c"
       end
 
@@ -92,17 +96,19 @@ RSpec.describe Flexor do
 
   describe "dup and clone" do
     context "when duping a Flexor" do
-      it "returns a Flexor with the same contents" do
+      it "returns a Flexor" do
         original = described_class.new({ a: 1, b: 2 })
-        copy = original.dup
-        expect(copy).to be_a described_class
-        expect(copy.to_h).to eq original.to_h
+        expect(original.dup).to be_a described_class
+      end
+
+      it "preserves the contents" do
+        original = described_class.new({ a: 1, b: 2 })
+        expect(original.dup.to_h).to eq original.to_h
       end
 
       it "returns a different object" do
         original = described_class.new({ a: 1, b: 2 })
-        copy = original.dup
-        expect(copy).not_to equal original
+        expect(original.dup).not_to equal original
       end
 
       it "modifications to the dup do not affect the original" do
@@ -114,17 +120,19 @@ RSpec.describe Flexor do
     end
 
     context "when cloning a Flexor" do
-      it "returns a Flexor with the same contents" do
+      it "returns a Flexor" do
         original = described_class.new({ a: 1, b: 2 })
-        copy = original.clone
-        expect(copy).to be_a described_class
-        expect(copy.to_h).to eq original.to_h
+        expect(original.clone).to be_a described_class
+      end
+
+      it "preserves the contents" do
+        original = described_class.new({ a: 1, b: 2 })
+        expect(original.clone.to_h).to eq original.to_h
       end
 
       it "returns a different object" do
         original = described_class.new({ a: 1, b: 2 })
-        copy = original.clone
-        expect(copy).not_to equal original
+        expect(original.clone).not_to equal original
       end
 
       it "modifications to the clone do not affect the original" do

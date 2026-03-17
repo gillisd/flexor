@@ -135,8 +135,11 @@ RSpec.describe Flexor do
     context "when no levels are set" do
       subject { described_class.new({}) }
 
-      it "returns nil at levels 1 and 2" do
+      it "returns nil at level 1" do
         expect(subject.a).to be_nil
+      end
+
+      it "returns nil at level 2" do
         expect(subject.a.b).to be_nil
       end
 
