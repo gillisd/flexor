@@ -32,11 +32,18 @@ RSpec.describe Flexor do
     end
 
     context "when reading from arrays stored in Flexor" do
-      it "array elements are accessible via standard array methods" do
-        store = described_class.new({ tags: ["a", "b", "c"] })
-        expect(store.tags.first).to eq "a"
-        expect(store.tags.last).to eq "c"
-        expect(store.tags.length).to eq 3
+      subject { described_class.new({ tags: ["a", "b", "c"] }) }
+
+      it "first element is accessible" do
+        expect(subject.tags.first).to eq "a"
+      end
+
+      it "last element is accessible" do
+        expect(subject.tags.last).to eq "c"
+      end
+
+      it "length is accessible" do
+        expect(subject.tags.length).to eq 3
       end
     end
   end
@@ -88,36 +95,54 @@ RSpec.describe Flexor do
 
   describe "dup and clone" do
     context "when duping a Flexor" do
-      it "returns a new Flexor with the same contents" do
-        original = described_class.new({ a: 1, b: 2 })
-        copy = original.dup
-        expect(copy).to be_a described_class
-        expect(copy.to_h).to eq original.to_h
-        expect(copy).not_to equal original
+      let(:original) { described_class.new({ a: 1, b: 2 }) }
+
+      it "returns a Flexor" do
+        expect(original.dup).to be_a described_class
       end
 
-      it "modifications to the dup do not affect the original" do
-        original = described_class.new({ a: 1 })
-        copy = original.dup
-        copy.b = 2
-        expect(original.to_h.keys).not_to include(:b)
+      it "preserves the contents" do
+        expect(original.dup.to_h).to eq original.to_h
+      end
+
+      it "returns a different object" do
+        expect(original.dup).not_to equal original
+      end
+
+      context "when modifying the copy" do
+        let(:original) { described_class.new({ a: 1 }) }
+
+        it "does not affect the original" do
+          copy = original.dup
+          copy.b = 2
+          expect(original.to_h.keys).not_to include(:b)
+        end
       end
     end
 
     context "when cloning a Flexor" do
-      it "returns a new Flexor with the same contents" do
-        original = described_class.new({ a: 1, b: 2 })
-        copy = original.clone
-        expect(copy).to be_a described_class
-        expect(copy.to_h).to eq original.to_h
-        expect(copy).not_to equal original
+      let(:original) { described_class.new({ a: 1, b: 2 }) }
+
+      it "returns a Flexor" do
+        expect(original.clone).to be_a described_class
       end
 
-      it "modifications to the clone do not affect the original" do
-        original = described_class.new({ a: 1 })
-        copy = original.clone
-        copy.b = 2
-        expect(original.to_h.keys).not_to include(:b)
+      it "preserves the contents" do
+        expect(original.clone.to_h).to eq original.to_h
+      end
+
+      it "returns a different object" do
+        expect(original.clone).not_to equal original
+      end
+
+      context "when modifying the copy" do
+        let(:original) { described_class.new({ a: 1 }) }
+
+        it "does not affect the original" do
+          copy = original.clone
+          copy.b = 2
+          expect(original.to_h.keys).not_to include(:b)
+        end
       end
     end
 

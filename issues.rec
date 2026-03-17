@@ -14,7 +14,7 @@ Updated: Tue, 17 Mar 2026 10:15:19 -0400
 Title: Add constant F that is set equal to Flexor
 Description: As Flexor is built to maximize ergonomics, it would be ideal to have a shorter way to call it. In lib, there should be f.rb, where F = Flexor as the only line. It could be called like:
 + puts F[json_string].people.first.first_name
-+ 
++
 Status: open
 
 Id: A4C9FDF4-2220-11F1-BED9-FE6CB9572C2E
