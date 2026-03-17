@@ -22,3 +22,13 @@ Updated: Tue, 17 Mar 2026 12:45:02 -0400
 Title: Address rubocop offenses
 Description: Currently 30 violations as I write this
 Status: open
+
+Id: BC17E510-2230-11F1-815D-FE6CB9572C2E
+Updated: Tue, 17 Mar 2026 14:40:13 -0400
+Title: Auto resolve fields against ones following a different style/casing 
+Description: It would be useful to have the ability for flexor to auto-resolve or infer fields, like:
++1. key `fooBar` is on data, user types `foo_bar`. Flexor returns value of `fooBar`
++2. Vice-versa of 1
++
++ Note that the behavior would be optional/opt-in
+Status: open
