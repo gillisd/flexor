@@ -39,9 +39,12 @@ RSpec.describe Flexor do
     context "with multiple levels of depth" do
       subject { described_class.new }
 
-      it "returns empty string at every unset level" do
+      it "returns empty string at levels 1 and 2" do
         expect(subject.a.to_s).to eq ""
         expect(subject.a.b.to_s).to eq ""
+      end
+
+      it "returns empty string at level 3" do
         expect(subject.a.b.c.to_s).to eq ""
       end
 
@@ -113,19 +116,28 @@ RSpec.describe Flexor do
   end
 
   describe "#to_h" do
-    it "returns a plain hash with scalar values" do
+    it "returns a plain Hash with the expected data" do
       store = described_class.new({ a: 1, b: "two" })
       result = store.to_h
       expect(result).to eq({ a: 1, b: "two" })
       expect(result).to be_a Hash
-      expect(result).not_to be_a described_class
     end
 
-    it "recursively converts nested Flexors back to hashes" do
+    it "does not return a Flexor from to_h" do
+      store = described_class.new({ a: 1, b: "two" })
+      expect(store.to_h).not_to be_a described_class
+    end
+
+    it "recursively converts nested Flexors to plain Hashes" do
       store = described_class.new({ user: { name: "alice" } })
       result = store.to_h
       expect(result).to eq({ user: { name: "alice" } })
       expect(result[:user]).to be_a Hash
+    end
+
+    it "nested values from to_h are not Flexors" do
+      store = described_class.new({ user: { name: "alice" } })
+      result = store.to_h
       expect(result[:user]).not_to be_a described_class
     end
 

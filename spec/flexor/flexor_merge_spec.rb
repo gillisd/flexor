@@ -18,19 +18,29 @@ RSpec.describe Flexor do
       expect(b.x).to eq 99
     end
 
-    it "deep merges nested hashes" do
+    it "deep merges nested hashes, preserving unchanged values" do
       a = described_class.new({ db: { host: "localhost", port: 5432 } })
       b = a.merge({ db: { port: 3306, name: "mydb" } })
       expect(b.db.host).to eq "localhost"
       expect(b.db.port).to eq 3306
+    end
+
+    it "deep merges nested hashes, adding new values" do
+      a = described_class.new({ db: { host: "localhost", port: 5432 } })
+      b = a.merge({ db: { port: 3306, name: "mydb" } })
       expect(b.db.name).to eq "mydb"
     end
 
-    it "deep merges multiple levels" do
+    it "deep merges multiple levels, preserving unchanged values" do
       a = described_class.new({ a: { b: { c: 1, d: 2 } } })
       b = a.merge({ a: { b: { d: 3, e: 4 } } })
       expect(b.a.b.c).to eq 1
       expect(b.a.b.d).to eq 3
+    end
+
+    it "deep merges multiple levels, adding new values" do
+      a = described_class.new({ a: { b: { c: 1, d: 2 } } })
+      b = a.merge({ a: { b: { d: 3, e: 4 } } })
       expect(b.a.b.e).to eq 4
     end
 
