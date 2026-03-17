@@ -1,0 +1,18 @@
+%rec: Issue
+%key: Id
+%typedef: Status_t enum open in_progress closed
+%typedef: Description_t regexp /.*/
+%type: Id uuid
+%type: Title line
+%type: Description Description_t
+%type: Updated date
+%type: Status Status_t
+%auto: Id Updated
+
+Id: BAA28228-220B-11F1-88B7-FE6CB9572C2E
+Updated: Tue, 17 Mar 2026 10:15:19 -0400
+Title: Add constant F that is set equal to Flexor
+Description: As Flexor is built to maximize ergonomics, it would be ideal to have a shorter way to call it. In lib, there should be f.rb, where F = Flexor as the only line. It could be called like:
++ puts F[json_string].people.first.first_name
++
+Status: open
