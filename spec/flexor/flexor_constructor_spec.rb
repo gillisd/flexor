@@ -89,8 +89,8 @@ RSpec.describe Flexor do
       end
 
       it "converts hash elements in mixed arrays" do
-        described_class.new({ mix: [1, { a: 2 }, "three"] }).mix[1] => { a: }
-        expect(a).to eq 2
+        store = described_class.new({ mix: [1, { a: 2 }, "three"] })
+        expect(store.mix[1]).to be_a described_class
       end
     end
 
