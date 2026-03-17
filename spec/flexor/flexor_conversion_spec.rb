@@ -119,35 +119,36 @@ RSpec.describe Flexor do
   end
 
   describe "#to_h" do
-    it "returns the expected data" do
-      store = described_class.new({ a: 1, b: "two" })
-      expect(store.to_h).to eq({ a: 1, b: "two" })
+    context "with a flat hash" do
+      subject { described_class.new({ a: 1, b: "two" }) }
+
+      it "returns the expected data" do
+        expect(subject.to_h).to eq({ a: 1, b: "two" })
+      end
+
+      it "returns a plain Hash" do
+        expect(subject.to_h).to be_a Hash
+      end
+
+      it "does not return a Flexor" do
+        expect(subject.to_h).not_to be_a described_class
+      end
     end
 
-    it "returns a plain Hash" do
-      store = described_class.new({ a: 1, b: "two" })
-      expect(store.to_h).to be_a Hash
-    end
+    context "with a nested hash" do
+      subject { described_class.new({ user: { name: "alice" } }) }
 
-    it "does not return a Flexor from to_h" do
-      store = described_class.new({ a: 1, b: "two" })
-      expect(store.to_h).not_to be_a described_class
-    end
+      it "recursively converts with correct data" do
+        expect(subject.to_h).to eq({ user: { name: "alice" } })
+      end
 
-    it "recursively converts nested Flexors with correct data" do
-      store = described_class.new({ user: { name: "alice" } })
-      expect(store.to_h).to eq({ user: { name: "alice" } })
-    end
+      it "converts nested Flexors to plain Hashes" do
+        expect(subject.to_h[:user]).to be_a Hash
+      end
 
-    it "recursively converts nested Flexors to plain Hashes" do
-      store = described_class.new({ user: { name: "alice" } })
-      expect(store.to_h[:user]).to be_a Hash
-    end
-
-    it "nested values from to_h are not Flexors" do
-      store = described_class.new({ user: { name: "alice" } })
-      result = store.to_h
-      expect(result[:user]).not_to be_a described_class
+      it "nested values are not Flexors" do
+        expect(subject.to_h[:user]).not_to be_a described_class
+      end
     end
 
     it "preserves arrays of scalars" do
