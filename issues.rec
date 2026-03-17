@@ -14,22 +14,22 @@ Updated: Tue, 17 Mar 2026 10:15:19 -0400
 Title: Add constant F that is set equal to Flexor
 Description: As Flexor is built to maximize ergonomics, it would be ideal to have a shorter way to call it. In lib, there should be f.rb, where F = Flexor as the only line. It could be called like:
 + puts F[json_string].people.first.first_name
-+ 
-Status: open
++
+Status: closed
 
 Id: A4C9FDF4-2220-11F1-BED9-FE6CB9572C2E
 Updated: Tue, 17 Mar 2026 12:45:02 -0400
 Title: Address rubocop offenses
 Description: Currently 30 violations as I write this
-Status: open
+Status: closed
 
 Id: BC17E510-2230-11F1-815D-FE6CB9572C2E
 Updated: Tue, 17 Mar 2026 14:40:13 -0400
-Title: Auto resolve fields against ones following a different style/casing 
+Title: Auto resolve fields against ones following a different style/casing
 Description: It would be useful to have the ability for flexor to auto-resolve or infer fields, like:
 + 1. key `fooBar` is on data, user types `foo_bar`. Flexor returns value of `fooBar`
 + 2. Vice-versa of 1
-+ 
++
 + Note that the behavior would be optional/opt-in
 Status: open
 
