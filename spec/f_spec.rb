@@ -1,3 +1,4 @@
+require "spec_helper"
 require "f"
 
 RSpec.describe F do
@@ -6,8 +7,10 @@ RSpec.describe F do
   end
 
   it "creates a Flexor via F[]" do
-    store = described_class[name: "alice"]
-    expect(store).to be_a Flexor
-    expect(store.name).to eq "alice"
+    expect(described_class[name: "alice"]).to be_a Flexor
+  end
+
+  it "allows method access on parsed values" do
+    expect(described_class[name: "alice"].name).to eq "alice"
   end
 end
