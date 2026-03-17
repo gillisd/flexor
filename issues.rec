@@ -16,3 +16,9 @@ Description: As Flexor is built to maximize ergonomics, it would be ideal to hav
 + puts F[json_string].people.first.first_name
 +
 Status: open
+
+Id: A4C9FDF4-2220-11F1-BED9-FE6CB9572C2E
+Updated: Tue, 17 Mar 2026 12:45:02 -0400
+Title: Address rubocop offenses
+Description: Currently 30 violations as I write this
+Status: open

@@ -190,9 +190,15 @@ RSpec.describe Flexor do
         expect(subject.nil?).to be(false).or be(true)
       end
 
-      it "values stored under those keys are accessible via bracket" do
+      it "to_h value is accessible via bracket" do
         expect(subject[:to_h]).to eq "override"
+      end
+
+      it "to_s value is accessible via bracket" do
         expect(subject[:to_s]).to eq "nope"
+      end
+
+      it "nil? value is accessible via bracket" do
         expect(subject[:nil?]).to eq "not nil"
       end
     end
