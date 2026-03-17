@@ -32,19 +32,18 @@ RSpec.describe Flexor do
     end
 
     context "when reading from arrays stored in Flexor" do
+      subject { described_class.new({ tags: ["a", "b", "c"] }) }
+
       it "first element is accessible" do
-        store = described_class.new({ tags: ["a", "b", "c"] })
-        expect(store.tags.first).to eq "a"
+        expect(subject.tags.first).to eq "a"
       end
 
       it "last element is accessible" do
-        store = described_class.new({ tags: ["a", "b", "c"] })
-        expect(store.tags.last).to eq "c"
+        expect(subject.tags.last).to eq "c"
       end
 
       it "length is accessible" do
-        store = described_class.new({ tags: ["a", "b", "c"] })
-        expect(store.tags.length).to eq 3
+        expect(subject.tags.length).to eq 3
       end
     end
   end
