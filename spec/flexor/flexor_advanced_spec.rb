@@ -95,26 +95,28 @@ RSpec.describe Flexor do
 
   describe "dup and clone" do
     context "when duping a Flexor" do
+      let(:original) { described_class.new({ a: 1, b: 2 }) }
+
       it "returns a Flexor" do
-        original = described_class.new({ a: 1, b: 2 })
         expect(original.dup).to be_a described_class
       end
 
       it "preserves the contents" do
-        original = described_class.new({ a: 1, b: 2 })
         expect(original.dup.to_h).to eq original.to_h
       end
 
       it "returns a different object" do
-        original = described_class.new({ a: 1, b: 2 })
         expect(original.dup).not_to equal original
       end
 
-      it "modifications to the dup do not affect the original" do
-        original = described_class.new({ a: 1 })
-        copy = original.dup
-        copy.b = 2
-        expect(original.to_h.keys).not_to include(:b)
+      context "when modifying the copy" do
+        let(:original) { described_class.new({ a: 1 }) }
+
+        it "does not affect the original" do
+          copy = original.dup
+          copy.b = 2
+          expect(original.to_h.keys).not_to include(:b)
+        end
       end
     end
 
