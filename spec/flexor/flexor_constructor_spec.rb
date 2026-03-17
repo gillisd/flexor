@@ -78,19 +78,20 @@ RSpec.describe Flexor do
         expect(subject.items.first.id).to eq 1
       end
 
-      it "preserves integers in mixed arrays" do
-        store = described_class.new({ mix: [1, { a: 2 }, "three"] })
-        expect(store.mix[0]).to eq 1
-      end
+      context "with mixed-type arrays" do
+        subject { described_class.new({ mix: [1, { a: 2 }, "three"] }) }
 
-      it "preserves strings in mixed arrays" do
-        store = described_class.new({ mix: [1, { a: 2 }, "three"] })
-        expect(store.mix[2]).to eq "three"
-      end
+        it "preserves integers" do
+          expect(subject.mix[0]).to eq 1
+        end
 
-      it "converts hash elements in mixed arrays" do
-        store = described_class.new({ mix: [1, { a: 2 }, "three"] })
-        expect(store.mix[1]).to be_a described_class
+        it "preserves strings" do
+          expect(subject.mix[2]).to eq "three"
+        end
+
+        it "converts hash elements" do
+          expect(subject.mix[1]).to be_a described_class
+        end
       end
     end
 
