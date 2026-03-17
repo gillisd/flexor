@@ -13,10 +13,9 @@ plugins:
   - rubocop-claude
   - rubocop-performance
   - rubocop-rspec
-  - rubocop-md
-  - rubocop-rake
 
 AllCops:
+  NewCops: enable
   TargetRubyVersion: 3.4
 
 # ===========================================================================
@@ -172,9 +171,6 @@ Style/RedundantReturn:
 # ===========================================================================
 # Overrides from rubocop-performance — disable chain-hostile cops
 # ===========================================================================
-Performance:
-  Exclude:
-    - "spec/**/*"
 
 # ChainArrayAllocation flags idiomatic pipelines for microsecond gains.
 # If we need real throughput we parallelize, not uglify.
@@ -233,11 +229,18 @@ Metrics/BlockLength:
     - heredoc
     - method_call
   AllowedMethods:
+    - command
     - describe
     - context
     - shared_examples
     - shared_examples_for
     - shared_context
+
+# Shared test contexts legitimately define many helpers (stdin, stdout,
+# stderr, env, cli, exit_status, output). These are a single fixture,
+# not independent concerns.
+RSpec/MultipleMemoizedHelpers:
+  Max: 10
 
 # Anonymous forwarding (*, **, &) breaks TruffleRuby, JRuby, and
 # Ruby < 3.2. Named args are explicit and portable.
@@ -379,16 +382,20 @@ RSpec/LeadingSubject:
 RSpec/ExpectChange:
   EnforcedStyle: block
 
+# Disabled because OpenStruct is used for testing
+Style/OpenStructUse:
+  Enabled: false
+
 RSpec/NamedSubject:
   Enabled: false
 
-# PROJECT SPECIFIC:
-#
-# Behavior is very intricate here and warrants separation
-RSpec/SpecFilePathFormat:
-  Enabled: false
-
+# Would rather be as thorough as possible here as this is inherently a "not normally safe" library
 RSpec/NestedGroups:
-  Enabled: false
+  Max: 4
+
 RSpec/MultipleExpectations:
-  Max: 3
+  Max: 2
+
+# Prefer the explicit &block rather than &
+Naming/BlockForwarding:
+  Enabled: false
