@@ -1,5 +1,4 @@
 require "spec_helper"
-require "f"
 
 RSpec.describe F do
   it "is the Flexor class" do
