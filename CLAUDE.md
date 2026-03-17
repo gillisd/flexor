@@ -19,8 +19,8 @@ Flexor is a Ruby gem providing a Hash-like data store with autovivifying nested 
 ## Commands
 
 - `rake spec` — run all tests
-- `bundle exec rspec spec/flexor/reading_spec.rb` — run a single spec file
-- `bundle exec rspec spec/flexor/reading_spec.rb:15` — run a single example by line
+- `bundle exec rspec spec/flexor/flexor_reading_spec.rb` — run a single spec file
+- `bundle exec rspec spec/flexor/flexor_reading_spec.rb:15` — run a single example by line
 - `rake rubocop` — run linter
 - `bundle exec rubocop -a` — autocorrect safe offenses
 - `rake` — run both specs and rubocop (default task)

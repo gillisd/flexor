@@ -18,20 +18,38 @@ RSpec.describe Flexor do
       expect(b.x).to eq 99
     end
 
-    it "deep merges nested hashes" do
-      a = described_class.new({ db: { host: "localhost", port: 5432 } })
-      b = a.merge({ db: { port: 3306, name: "mydb" } })
-      expect(b.db.host).to eq "localhost"
-      expect(b.db.port).to eq 3306
-      expect(b.db.name).to eq "mydb"
+    context "when deep merging nested hashes" do
+      let(:a) { described_class.new({ db: { host: "localhost", port: 5432 } }) }
+      let(:b) { a.merge({ db: { port: 3306, name: "mydb" } }) }
+
+      it "preserves untouched values" do
+        expect(b.db.host).to eq "localhost"
+      end
+
+      it "updates changed values" do
+        expect(b.db.port).to eq 3306
+      end
+
+      it "adds new values" do
+        expect(b.db.name).to eq "mydb"
+      end
     end
 
-    it "deep merges multiple levels" do
-      a = described_class.new({ a: { b: { c: 1, d: 2 } } })
-      b = a.merge({ a: { b: { d: 3, e: 4 } } })
-      expect(b.a.b.c).to eq 1
-      expect(b.a.b.d).to eq 3
-      expect(b.a.b.e).to eq 4
+    context "when deep merging multiple levels" do
+      let(:a) { described_class.new({ a: { b: { c: 1, d: 2 } } }) }
+      let(:b) { a.merge({ a: { b: { d: 3, e: 4 } } }) }
+
+      it "preserves untouched values" do
+        expect(b.a.b.c).to eq 1
+      end
+
+      it "updates changed values" do
+        expect(b.a.b.d).to eq 3
+      end
+
+      it "adds new values" do
+        expect(b.a.b.e).to eq 4
+      end
     end
 
     it "replaces a nested subtree with a scalar when incoming is scalar" do
