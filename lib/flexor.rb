@@ -3,6 +3,7 @@ require_relative "flexor/hash_delegation"
 require_relative "flexor/serialization"
 require_relative "flexor/vivification"
 require_relative "flexor/case_conversion"
+require_relative "flexor/flex_keys"
 
 ##
 # A Hash-like data store with autovivifying nested access, nil-safe
@@ -14,6 +15,7 @@ class Flexor
   include HashDelegation
   include Serialization
   include Vivification
+  include FlexKeys
 
   def self.[](input = {})
     case input
@@ -33,11 +35,12 @@ class Flexor
     other.is_a?(self)
   end
 
-  def initialize(hash = {}, root: true)
+  def initialize(hash = {}, root: true, flex_keys: true)
     raise ArgumentError, "expected a Hash, got #{hash.class}" unless hash.is_a?(Hash)
 
-    @root  = root
-    @store = vivify(hash)
+    @root      = root
+    @flex_keys = flex_keys
+    @store     = vivify(hash)
   end
 
   def initialize_copy(original)
@@ -46,7 +49,7 @@ class Flexor
   end
 
   def [](key)
-    @store[key]
+    @store[resolve_key(key)]
   end
 
   def []=(key, value)
@@ -166,8 +169,9 @@ class Flexor
   end
 
   def read_via_method(name)
-    cache_getter(name) if !frozen? && @store.key?(name)
-    self[name]
+    resolved = resolve_key(name)
+    cache_getter(name, resolved) if !frozen? && @store.key?(resolved)
+    self[resolved]
   end
 
   def cache_setter(name, key)
@@ -178,11 +182,11 @@ class Flexor
     end
   end
 
-  def cache_getter(name)
+  def cache_getter(name, resolved = name)
     define_singleton_method(name) do |*a, &blk|
       raise NoMethodError, "undefined method '#{name}' for #{inspect}" if blk || !a.empty?
 
-      self[name]
+      self[resolved]
     end
   end
 end
