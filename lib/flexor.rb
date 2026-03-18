@@ -17,18 +17,21 @@ class Flexor
   include Vivification
   include FlexKeys
 
-  def self.[](input = {})
+  def self.[](input = {}, **options)
+    flex_keys = options.delete(:flex_keys) { true }
+    input = options.merge(input) if input.is_a?(Hash) && !options.empty?
+
     case input
-    when String then from_json(input)
-    when Hash then new(input)
+    when String then from_json(input, flex_keys: flex_keys)
+    when Hash then new(input, flex_keys: flex_keys)
     else raise ArgumentError, "expected a String or Hash, got #{input.class}"
     end
   end
 
-  def self.from_json(json)
+  def self.from_json(json, flex_keys: true)
     require "json"
     JSON.parse(json, symbolize_names: true)
-        .then { new it }
+        .then { new(it, flex_keys: flex_keys) }
   end
 
   def self.===(other)

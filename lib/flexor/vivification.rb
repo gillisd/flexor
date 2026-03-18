@@ -6,7 +6,7 @@ class Flexor
 
     def vivify(hash)
       new_hash = Hash.new do |h, key|
-        h[key] = self.class.new({}, root: false)
+        h[key] = self.class.new({}, root: false, flex_keys: @flex_keys)
       end
 
       hash.each do |key, value|
@@ -18,7 +18,7 @@ class Flexor
 
     def vivify_value(value)
       case value
-      when Hash then self.class.new(value, root: false)
+      when Hash then self.class.new(value, root: false, flex_keys: @flex_keys)
       when Array then vivify_array(value)
       else value
       end
@@ -27,7 +27,7 @@ class Flexor
     def vivify_array(array)
       array.map do |item|
         case item
-        when Hash then self.class.new(item, root: false)
+        when Hash then self.class.new(item, root: false, flex_keys: @flex_keys)
         when Array then vivify_array(item)
         else item
         end

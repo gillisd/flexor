@@ -49,6 +49,54 @@ RSpec.describe Flexor do
     end
   end
 
+  describe "flex_keys factory methods" do
+    describe ".[] with Hash" do
+      it "passes flex_keys to constructor" do
+        store = described_class[{ fooBar: "baz" }, flex_keys: true]
+        expect(store.foo_bar).to eq "baz"
+      end
+    end
+
+    describe ".[] with JSON string" do
+      it "passes flex_keys through from_json" do
+        store = described_class['{"firstName":"Alice"}', flex_keys: true]
+        expect(store.first_name).to eq "Alice"
+      end
+    end
+
+    describe "F[] alias" do
+      it "passes flex_keys" do
+        store = F['{"firstName":"Alice"}', flex_keys: true]
+        expect(store.first_name).to eq "Alice"
+      end
+    end
+
+    describe ".from_json" do
+      it "accepts flex_keys keyword" do
+        store = described_class.from_json('{"firstName":"Alice"}', flex_keys: true)
+        expect(store.first_name).to eq "Alice"
+      end
+    end
+  end
+
+  describe "flex_keys propagation" do
+    it "nested Flexors inherit flex_keys from constructor" do
+      store = described_class.new({ user: { firstName: "Alice" } }, flex_keys: true)
+      expect(store.user.first_name).to eq "Alice"
+    end
+
+    it "autovivified children inherit flex_keys" do
+      store = described_class.new({}, flex_keys: true)
+      store.user.firstName = "Alice"
+      expect(store.user.first_name).to eq "Alice"
+    end
+
+    it "arrays of hashes inherit flex_keys" do
+      store = described_class.new({ items: [{ fooBar: 1 }] }, flex_keys: true)
+      expect(store.items.first.foo_bar).to eq 1
+    end
+  end
+
   describe "flex_keys writing" do
     describe "via bracket" do
       it "updates existing camelCase key when writing snake_case" do
