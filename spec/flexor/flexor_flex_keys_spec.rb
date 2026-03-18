@@ -136,4 +136,38 @@ RSpec.describe Flexor do
       end
     end
   end
+
+  describe "flex_keys key?" do
+    it "resolves alternate key" do
+      store = described_class.new({ fooBar: "baz" }, flex_keys: true)
+      expect(store.key?(:foo_bar)).to be true
+    end
+
+    it "returns false when neither exact nor alternate exists" do
+      store = described_class.new({ fooBar: "baz" }, flex_keys: true)
+      expect(store.key?(:missing)).to be false
+    end
+  end
+
+  describe "flex_keys serialization" do
+    describe "Marshal round-trip" do
+      it "preserves flex_keys after Marshal round-trip" do
+        store = described_class.new({ fooBar: "baz" }, flex_keys: true)
+        restored = Marshal.load(Marshal.dump(store))
+        expect(restored.foo_bar).to eq "baz"
+      end
+    end
+
+    describe "YAML round-trip" do
+      it "preserves flex_keys after YAML round-trip" do
+        require "yaml"
+        store = described_class.new({ fooBar: "baz" }, flex_keys: true)
+        restored = YAML.safe_load(
+          YAML.dump(store),
+          permitted_classes: [described_class, Symbol],
+        )
+        expect(restored.foo_bar).to eq "baz"
+      end
+    end
+  end
 end
