@@ -113,7 +113,10 @@ class Flexor
   def deconstruct_keys(keys)
     return @store if keys.nil?
 
-    @store.slice(*keys)
+    keys.each_with_object({}) do |key, hash|
+      resolved = resolve_key(key)
+      hash[key] = @store[resolved] if @store.key?(resolved)
+    end
   end
 
   def nil?
