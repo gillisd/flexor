@@ -53,15 +53,15 @@ class Flexor
   end
 
   def []=(key, value)
-    @store[key] = vivify_value(value)
+    @store[resolve_key(key)] = vivify_value(value)
   end
 
   def set_raw(key, value)
-    @store[key] = value
+    @store[resolve_key(key)] = value
   end
 
   def delete(key)
-    @store.delete(key)
+    @store.delete(resolve_key(key))
   end
 
   def clear
@@ -164,8 +164,9 @@ class Flexor
 
   def write_via_method(name, arg)
     key = name.to_s.chomp("=").to_sym
-    cache_setter(name, key)
-    self[key] = arg
+    resolved = resolve_key(key)
+    cache_setter(name, resolved)
+    self[resolved] = arg
   end
 
   def read_via_method(name)
@@ -174,11 +175,11 @@ class Flexor
     self[resolved]
   end
 
-  def cache_setter(name, key)
+  def cache_setter(name, resolved)
     define_singleton_method(name) do |val = nil, &blk|
       raise NoMethodError, "undefined method '#{name}' for #{inspect}" if blk
 
-      self[key] = val
+      self[resolved] = val
     end
   end
 
