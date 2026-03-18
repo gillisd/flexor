@@ -32,15 +32,18 @@ Flexor is a Ruby gem providing a Hash-like data store with autovivifying nested 
 
 ## Architecture
 
-Single class `Flexor` in `lib/flexor.rb` with three mixins:
+Single class `Flexor` in `lib/flexor.rb` with five mixins:
 
 - **`Vivification`** (`lib/flexor/vivification.rb`) — recursively converts Hashes/Arrays into Flexor objects on write; reverses via `recurse_to_h` on read. The `@store` uses a `Hash.new` default block that auto-creates child Flexor nodes (autovivification).
 - **`HashDelegation`** (`lib/flexor/hash_delegation.rb`) — delegates `keys`, `values`, `size`, `empty?`, `key?` to `@store`.
 - **`Serialization`** (`lib/flexor/serialization.rb`) — Marshal and YAML round-trip support.
+- **`FlexKeys`** (`lib/flexor/flex_keys.rb`) — private `resolve_key` method that translates between camelCase and snake_case keys when `@flex_keys` is enabled. All key-accepting methods route through `resolve_key`.
+- **`CaseConversion`** (`lib/flexor/case_conversion.rb`) — pure `module_function` utilities: `camelize`, `underscore`, `alternate_key`. Used by `FlexKeys` to compute alternate key forms.
 
 Key internals:
 - `@store` is the backing Hash with an autovivifying default block
 - `@root` flag distinguishes top-level instances from auto-created children (affects `inspect` and `nil?` behavior)
+- `@flex_keys` flag enables camelCase/snake_case key resolution (default `true`); propagates to children via vivification
 - `method_missing` handles dynamic getter/setter; once accessed, singleton methods are cached for performance (`cache_getter`/`cache_setter`)
 - `nil?` returns `true` when `@store` is empty (non-root nodes appear nil-like until written to)
 
