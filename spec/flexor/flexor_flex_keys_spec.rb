@@ -48,4 +48,44 @@ RSpec.describe Flexor do
       end
     end
   end
+
+  describe "flex_keys writing" do
+    describe "via bracket" do
+      it "updates existing camelCase key when writing snake_case" do
+        store = described_class.new({ fooBar: "old" }, flex_keys: true)
+        store[:foo_bar] = "new"
+        expect(store[:fooBar]).to eq "new"
+      end
+
+      it "does not create a duplicate snake_case key" do
+        store = described_class.new({ fooBar: "old" }, flex_keys: true)
+        store[:foo_bar] = "new"
+        expect(store.keys).to eq [:fooBar]
+      end
+    end
+
+    describe "via method" do
+      it "updates existing camelCase key when writing snake_case" do
+        store = described_class.new({ fooBar: "old" }, flex_keys: true)
+        store.foo_bar = "new"
+        expect(store[:fooBar]).to eq "new"
+      end
+    end
+
+    describe "#set_raw" do
+      it "resolves key but skips vivification" do
+        store = described_class.new({ fooBar: {} }, flex_keys: true)
+        store.set_raw(:foo_bar, { nested: true })
+        expect(store[:fooBar]).to be_a Hash
+      end
+    end
+
+    describe "#delete" do
+      it "deletes via alternate key" do
+        store = described_class.new({ fooBar: "baz" }, flex_keys: true)
+        store.delete(:foo_bar)
+        expect(store.key?(:fooBar)).to be false
+      end
+    end
+  end
 end
