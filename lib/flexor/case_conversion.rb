@@ -16,6 +16,8 @@ class Flexor
       string.gsub!(%r{(?:_|(/))([a-z\d]*)}) do
         "#{Regexp.last_match(1) && "::"}#{Regexp.last_match(2).capitalize}"
       end
+      return string if string.empty?
+
       string[0] = string[0].downcase
       string
     end

@@ -202,9 +202,9 @@ RSpec.describe Flexor do
       expect(merged.foo_bar).to eq "old"
     end
 
-    it "key? resolves alternate keys" do
+    it "has_key? resolves alternate keys" do
       store = described_class.new({ fooBar: "baz" }, flex_keys: true)
-      expect(store.key?(:foo_bar)).to be true
+      expect(store.send(:has_key?, :foo_bar)).to be true
     end
   end
 
