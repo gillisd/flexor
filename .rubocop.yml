@@ -400,6 +400,13 @@ RSpec/MultipleExpectations:
 Naming/BlockForwarding:
   Enabled: false
 
+# has_key? is a standard Ruby Hash method. Renaming it would break the
+# public interface contract that Flexor quacks like a Hash.
+Naming/PredicatePrefix:
+  AllowedMethods:
+    - is_a?
+    - has_key?
+
 # This has bugs and is causing specs to fail when autocorrected
 Performance/RedundantMerge:
   Enabled: false
