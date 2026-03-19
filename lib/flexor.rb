@@ -1,4 +1,5 @@
 require_relative "flexor/version"
+require_relative "flexor/plugins"
 require_relative "flexor/hash_delegation"
 require_relative "flexor/serialization"
 require_relative "flexor/vivification"
@@ -13,6 +14,7 @@ class Flexor
   include HashDelegation
   include Serialization
   include Vivification
+  extend  Plugins::Dispatcher
 
   def self.[](input = {})
     case input
