@@ -4,6 +4,7 @@ require_relative "flexor/hash_delegation"
 require_relative "flexor/serialization"
 require_relative "flexor/vivification"
 require_relative "flexor/method_dispatch"
+require_relative "flexor/case_conversion"
 
 ##
 # A Hash-like data store with autovivifying nested access, nil-safe
