@@ -25,6 +25,9 @@ class Flexor
     def key?(key)
       @store.key?(key)
     end
-    alias has_key? key?
+
+    def has_key?(key)
+      key?(key)
+    end
   end
 end
