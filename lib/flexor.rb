@@ -19,7 +19,7 @@ end
 require_relative "flexor/plugins/core"
 require_relative "flexor/plugins/flex_keys"
 
-Flexor.plugin(Flexor::Plugins::Core)
-Flexor.plugin(Flexor::Plugins::FlexKeys)
+Flexor.plugin(:core)
+Flexor.plugin(:flex_keys)
 
 require_relative "f"
