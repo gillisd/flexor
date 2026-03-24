@@ -159,10 +159,10 @@ RSpec.describe Flexor do
         expect(store.baz).to eq "qux"
       end
 
-      it 'store.foo and store["foo"] do NOT access the same value' do
+      it 'store.foo and store["foo"] access the same value' do
         store = described_class.new
         store.foo = "bar"
-        expect(store["foo"]).not_to eq "bar"
+        expect(store["foo"]).to eq "bar"
       end
     end
   end

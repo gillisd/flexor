@@ -32,9 +32,9 @@ RSpec.describe Flexor do
     end
 
     describe "non-symbol keys" do
-      it "does not resolve string keys" do
+      it "resolves string keys via symbolize_keys + flex_keys" do
         store = described_class.new({ fooBar: "baz" })
-        expect(store["foo_bar"]).to be_nil
+        expect(store["foo_bar"]).to eq "baz"
       end
     end
   end
