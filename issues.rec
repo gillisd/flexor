@@ -1,10 +1,10 @@
 %rec: Issue
 %key: Id
 %typedef: Status_t enum open in_progress closed
-%typedef: Description_t regexp /.*/
+%typedef: text_t regexp /.*/
 %type: Id uuid
 %type: Title line
-%type: Description Description_t
+%type: Description text_t
 %type: Updated date
 %type: Status Status_t
 %auto: Id Updated
@@ -38,3 +38,12 @@ Updated: Tue, 17 Mar 2026 15:00:34 -0400
 Title: Using F "alias" requires "require 'f'", which is undesirable
 Description: The requirement of requiring 'f' for usage of "F" is undesirable as it pollutes global namespace, and is not intuitive for users that install flexor as the name of the gem. That alias should be loaded automatically when user does `require 'flexor'`.
 Status: closed
+
+Id: 2FCAE808-2598-11F1-B405-FE6CB9572C2E
+Updated: Sat, 21 Mar 2026 22:38:19 -0400
+Title: Perform spike around IRB autocompletions
+Description: IRB autocompletions are incredibly useful, but flexor only exposes its own internal methods, rather than the fields for autocompletions. Some thoughts:
++ 1. Method caching is already (or was) built into flexor - if methods get defined, IRB can cache them
++ 2. Alternatively but more robustly, flexor could dynamically generate RBS types for the RBS type infer completor.
++ 3. Either which way, the plugin system allows us to isolate this behvior and only trigger it when IRB is active
+Status: open
