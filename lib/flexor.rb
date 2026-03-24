@@ -17,9 +17,11 @@ class Flexor
 end
 
 require_relative "flexor/plugins/core"
+require_relative "flexor/plugins/symbolize_keys"
 require_relative "flexor/plugins/flex_keys"
 
 Flexor.plugin(:core)
 Flexor.plugin(:flex_keys)
+Flexor.plugin(:symbolize_keys)
 
 require_relative "f"
