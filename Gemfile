@@ -17,3 +17,5 @@ gem "debug", "~> 1.11"
 gem "hashie"
 gem "ostruct"
 gem "rdoc"
+
+gem "warning", "~> 1.5"
