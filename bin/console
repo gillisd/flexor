@@ -1,8 +1,8 @@
 #!/usr/bin/env ruby
 
 require "bundler/setup"
-require 'warning'
-Warning.ignore /Error loading RC file/
+require "warning"
+Warning.ignore(/Error loading RC file/)
 require "flexor"
 require "irb"
 
