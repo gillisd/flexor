@@ -1,10 +1,10 @@
 %rec: Issue
 %key: Id
 %typedef: Status_t enum open in_progress closed
-%typedef: Description_t regexp /.*/
+%typedef: text_t regexp /.*/
 %type: Id uuid
 %type: Title line
-%type: Description Description_t
+%type: Description text_t
 %type: Updated date
 %type: Status Status_t
 %auto: Id Updated
@@ -67,4 +67,31 @@ Description: 4 │ module ActiveSupport
 +   20 │         end
 +   21 │       end
 +   22 │     end
+Status: open
+
+Id: 23AC92EE-35CC-11F1-AA9F-FE6CB9572C2F
+Updated: Sat, 11 Apr 2026 13:30:31 -0400
+Title: Create plugin to allow for the "?" method suffix
+Description: For example, when doing something like
++ ```ruby
++ object = Flexor[mandatory: true]
++ 
++ # CURRENT BEHAVIOR:
++ #
++ object.mandatory
++ # => true
++ #
++ object.mandatory?
++ # => nil
++ #
++ 
++ # DESIRED BEHAVIOR:
++ #
++ object.mandatory
++ # => true
++ #
++ object.mandatory?
++ # => true
++ #
++ ```
 Status: open
