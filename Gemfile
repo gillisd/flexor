@@ -5,6 +5,7 @@ gemspec
 gem "benchmark"
 gem "benchmark-ips"
 gem "debug", "~> 1.11"
+gem "gempilot", "~> 0.2.0"
 gem "hashie"
 gem "irb"
 gem "json", "~> 2.19"
