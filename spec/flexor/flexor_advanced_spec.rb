@@ -49,27 +49,38 @@ RSpec.describe Flexor do
   end
 
   describe "autovivification side effects" do
-    it "reading an unset property creates the key in the store (default_proc behavior)" do
+    it "reading an unset property via bracket does NOT create a key in the store" do
       store = described_class.new
       _ = store[:phantom]
+      expect(store.instance_variable_get(:@store)).not_to have_key(:phantom)
+    end
+
+    it "reading an unset property via bracket returns the nil singleton" do
+      store = described_class.new
+      expect(store[:phantom]).to equal nil
+    end
+
+    it "reading an unset property via method DOES create a key in the store" do
+      store = described_class.new
+      _ = store.phantom
       expect(store.instance_variable_get(:@store)).to have_key(:phantom)
     end
 
-    it "the created key holds an empty Flexor" do
+    it "the method-vivified key holds an empty Flexor" do
       store = described_class.new
-      result = store[:phantom]
+      result = store.phantom
       expect(result).to be_a described_class
       expect(result).to be_nil
     end
 
-    it "chaining reads on unset properties creates keys at every intermediate level" do
+    it "chaining method reads on unset properties creates keys at every intermediate level" do
       store = described_class.new
       _ = store.a.b.c
       inner_store = store.instance_variable_get(:@store)
       expect(inner_store).to have_key(:a)
     end
 
-    it "documents whether reads leave traces in to_h" do
+    it "method-style reads do not leave empty branches in to_h" do
       store = described_class.new({ real: "data" })
       _ = store.phantom
       expect(store.to_h).to eq({ real: "data" })
