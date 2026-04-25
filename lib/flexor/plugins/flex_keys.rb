@@ -50,7 +50,7 @@ class Flexor
 
         def read_via_method(name)
           resolved = resolve_flex_key(name)
-          cache_getter(name) if !frozen? && @store.key?(resolved)
+          cache_getter(name, resolved) if !frozen? && @store.key?(resolved)
           return @store[resolved] if @store.key?(resolved)
 
           super

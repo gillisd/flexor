@@ -40,11 +40,11 @@ class Flexor
       end
     end
 
-    def cache_getter(name)
+    def cache_getter(name, key = name)
       define_singleton_method(name) do |*a, &blk|
         raise NoMethodError, "undefined method '#{name}' for #{inspect}" if blk || !a.empty?
 
-        @store[name]
+        @store[key]
       end
     end
   end

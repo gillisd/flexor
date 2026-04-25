@@ -139,6 +139,20 @@ RSpec.describe Flexor do
     end
   end
 
+  describe "method caching with case resolution" do
+    it "cached method getter still resolves alternate case on subsequent reads (camel stored, snake accessed)" do
+      store = described_class.new({ fooBar: "baz" })
+      store.foo_bar
+      expect(store.foo_bar).to eq "baz"
+    end
+
+    it "cached method getter still resolves alternate case on subsequent reads (snake stored, camel accessed)" do
+      store = described_class.new({ foo_bar: "qux" })
+      store.fooBar
+      expect(store.fooBar).to eq "qux"
+    end
+  end
+
   describe "flex_keys edge cases" do
     it "merge! resolves keys" do
       store = described_class.new({ fooBar: "old" })
