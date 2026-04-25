@@ -56,6 +56,16 @@ store[:foo]                 # => "default"
 
 This asymmetry is intentional. Bracket access matches `Hash#[]` semantics so `||=`, `&&`, and conditional assignment behave as Ruby developers expect. Method access keeps the chain-friendly behaviour described in the next section.
 
+The asymmetry holds even after a method-style read has touched the key:
+
+```ruby
+store = Flexor.new
+_ = store.maybe              # method touch creates an empty child internally
+store[:maybe]                # => nil    (still literal nil via bracket)
+store[:maybe] ||= "default"  # works — assigns "default"
+store[:maybe]                # => "default"
+```
+
 Nested chaining works to any depth:
 
 ```ruby
