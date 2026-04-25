@@ -87,6 +87,40 @@ RSpec.describe Flexor do
     end
   end
 
+  describe "bracket-nil contract" do
+    context "when a method touch has materialized an empty child" do
+      it "key? returns true even though bracket access returns nil" do
+        store = described_class.new
+        _ = store.foo
+        expect(store.key?(:foo)).to be true
+        expect(store[:foo]).to be_nil
+      end
+
+      it "to_h omits the materialized-but-empty key" do
+        store = described_class.new
+        _ = store.foo
+        expect(store.to_h).to eq({})
+      end
+    end
+
+    context "when an empty Flexor is explicitly assigned" do
+      let(:outer) { described_class.new }
+      let(:empty) { described_class.new }
+
+      before { outer[:slot] = empty }
+
+      it "bracket access returns nil while the empty Flexor sits in storage" do
+        expect(outer[:slot]).to be_nil
+      end
+
+      it "bracket access returns the Flexor once it gains content" do
+        empty[:x] = 1
+        expect(outer[:slot]).to be_a(described_class)
+        expect(outer[:slot][:x]).to eq 1
+      end
+    end
+  end
+
   describe "thread safety" do
     it "concurrent reads on the same Flexor do not raise" do
       store = described_class.new({ a: 1, b: 2, c: 3 })
