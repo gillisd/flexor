@@ -28,7 +28,7 @@ class Flexor
 
         def [](key)
           value = @store[key]
-          return nil if value.is_a?(Flexor) && value.nil?
+          return nil if nil_like?(value)
 
           value
         end
@@ -125,6 +125,12 @@ class Flexor
 
         def ===(other)
           other.nil? ? nil? : super
+        end
+
+        private
+
+        def nil_like?(value)
+          value.is_a?(Flexor) && value.nil?
         end
       end
 

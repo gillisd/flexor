@@ -18,7 +18,7 @@ RSpec.describe "accessor parity between Hash and Flexor" do
       end
 
       describe "setting via implicit nil OR" do
-        it "correctly sets the attribute" do
+        it "sets the attribute" do
           h = {}
           h[:foo] || h[:foo] = :bar
           expect(h[:foo]).to eq(:bar)
@@ -26,7 +26,7 @@ RSpec.describe "accessor parity between Hash and Flexor" do
       end
 
       describe "setting via nil? OR" do
-        it "correctly sets the attribute" do
+        it "sets the attribute" do
           h = {}
           h[:foo].nil? && h[:foo] = :bar
           expect(h[:foo]).to eq(:bar)
@@ -53,7 +53,7 @@ RSpec.describe "accessor parity between Hash and Flexor" do
       end
 
       describe "setting via implicit nil OR" do
-        it "correctly sets the attribute" do
+        it "sets the attribute" do
           f = described_class.new
           f[:foo] || f[:foo] = :bar
           expect(f.foo).to eq(:bar)
@@ -62,7 +62,7 @@ RSpec.describe "accessor parity between Hash and Flexor" do
       end
 
       describe "setting via nil? OR" do
-        it "correctly sets the attribute" do
+        it "sets the attribute" do
           f = described_class.new
           f[:foo].nil? && f[:foo] = :bar
           expect(f.foo).to eq(:bar)
@@ -83,7 +83,7 @@ RSpec.describe "accessor parity between Hash and Flexor" do
       end
 
       describe "setting via implicit nil OR" do
-        it "correctly sets the attribute" do
+        it "sets the attribute" do
           f = described_class.new
           _ = f.foo
           f[:foo] || f[:foo] = :bar
@@ -93,7 +93,7 @@ RSpec.describe "accessor parity between Hash and Flexor" do
       end
 
       describe "setting via nil? OR" do
-        it "correctly sets the attribute" do
+        it "sets the attribute" do
           f = described_class.new
           _ = f.foo
           f[:foo].nil? && f[:foo] = :bar
