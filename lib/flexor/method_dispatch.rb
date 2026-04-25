@@ -44,7 +44,7 @@ class Flexor
       define_singleton_method(name) do |*a, &blk|
         raise NoMethodError, "undefined method '#{name}' for #{inspect}" if blk || !a.empty?
 
-        self[name]
+        @store[name]
       end
     end
   end

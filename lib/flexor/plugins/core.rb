@@ -27,7 +27,10 @@ class Flexor
         end
 
         def [](key)
-          @store[key]
+          value = @store[key]
+          return nil if value.is_a?(Flexor) && value.nil?
+
+          value
         end
 
         def []=(key, value)
