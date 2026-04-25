@@ -63,10 +63,9 @@ reading a level 1 property via hash accessor:
   when the property exists:
     reads the correct property
   when the property does not exist:
-    returns a value where nil? is true
-    returns a value that == nil
-    does not return the nil singleton
-    returns a Flexor
+    returns the nil singleton
+    satisfies be_nil and responds true to nil?
+    is not a Flexor instance
 
 reading a level 2 property via method:
   when the level 1 property exists:
@@ -85,8 +84,8 @@ reading a level 2 property via hash accessor:
     when the level 2 property does not exist:
       returns a value where nil? is true
   when the level 1 property does not exist:
-    returns a value where nil? is true
-    the returned value is itself a Flexor that supports further chaining
+    returns nil at level 1
+    raises NoMethodError when chaining brackets through a missing key
 
 reading at arbitrary depth (3+ levels):
   when all levels are set:
@@ -119,8 +118,8 @@ writing a level 2 property via hash accessor:
   when the level 1 property has been set:
     writes and reads the written property
   when the level 1 property has not been set:
-    vivifies the level 1 property
-    writes and reads the written property
+    raises NoMethodError when writing through an unset bracket
+    supports method-style vivification followed by bracket write
 
 writing at arbitrary depth (3+ levels):
   when no intermediate levels are set:
@@ -365,10 +364,12 @@ array handling end-to-end:
     array elements are accessible via standard array methods
 
 autovivification side effects:
-  reading an unset property creates the key in the store (default_proc behavior)
-  the created key holds an empty Flexor
-  chaining reads on unset properties creates keys at every intermediate level
-  documents whether reads leave traces in to_h
+  reading an unset property via bracket does NOT create a key in the store
+  reading an unset property via bracket returns the nil singleton
+  reading an unset property via method DOES create a key in the store
+  the method-vivified key holds an empty Flexor
+  chaining method reads on unset properties creates keys at every intermediate level
+  method-style reads do not leave empty branches in to_h
 
 thread safety:
   concurrent reads on the same Flexor do not raise
@@ -389,7 +390,8 @@ freeze:
   when freezing a Flexor:
     prevents further writes
     reads still work
-    autovivification raises on frozen store
+    bracket access on a missing key returns nil without raising
+    method-style autovivification raises FrozenError on frozen store
     merge! on a frozen Flexor raises FrozenError
     delete on a frozen Flexor raises FrozenError
     clear on a frozen Flexor raises FrozenError
