@@ -35,13 +35,26 @@ store.api.version # => 2
 
 ### Accessing Properties
 
-Method access and bracket access are interchangeable:
+Method access and bracket access return the same value for keys that exist:
 
 ```ruby
 store = Flexor.new({ name: "Alice" })
 store.name      # => "Alice"
 store[:name]    # => "Alice"
 ```
+
+For unset keys the two access modes diverge:
+
+```ruby
+store = Flexor.new
+store[:missing]    # => nil    (literal Ruby nil, plays correctly with ||=)
+store.missing      # => Flexor (nil-like, supports chaining)
+
+store[:foo] ||= "default"   # works — bracket read is nil, ||= assigns
+store[:foo]                 # => "default"
+```
+
+This asymmetry is intentional. Bracket access matches `Hash#[]` semantics so `||=`, `&&`, and conditional assignment behave as Ruby developers expect. Method access keeps the chain-friendly behaviour described in the next section.
 
 Nested chaining works to any depth:
 
