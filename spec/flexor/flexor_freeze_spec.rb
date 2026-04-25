@@ -13,10 +13,16 @@ RSpec.describe Flexor do
         expect(store.a).to eq 1
       end
 
-      it "autovivification raises on frozen store" do
+      it "bracket access on a missing key returns nil without raising" do
         store = described_class.new
         store.freeze
-        expect { store[:missing] }.to raise_error(FrozenError)
+        expect(store[:missing]).to be_nil
+      end
+
+      it "method-style autovivification raises FrozenError on frozen store" do
+        store = described_class.new
+        store.freeze
+        expect { store.missing }.to raise_error(FrozenError)
       end
 
       it "merge! on a frozen Flexor raises FrozenError" do
