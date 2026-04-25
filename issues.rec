@@ -9,7 +9,7 @@
 %type: Status Status_t
 %auto: Id Updated
 
-Id: BAA28228-220B-11F1-88B7-FE6CB9572C2E
+Id: 710B6B1A-5EE5-4899-BB12-E41B44DAC090
 Updated: Tue, 17 Mar 2026 10:15:19 -0400
 Title: Add constant F that is set equal to Flexor
 Description: As Flexor is built to maximize ergonomics, it would be ideal to have a shorter way to call it. In lib, there should be f.rb, where F = Flexor as the only line. It could be called like:
@@ -17,13 +17,13 @@ Description: As Flexor is built to maximize ergonomics, it would be ideal to hav
 + 
 Status: closed
 
-Id: A4C9FDF4-2220-11F1-BED9-FE6CB9572C2E
+Id: E4B0F842-0EFD-4FA9-9841-0984A905C67B
 Updated: Tue, 17 Mar 2026 12:45:02 -0400
 Title: Address rubocop offenses
 Description: Currently 30 violations as I write this
 Status: closed
 
-Id: BC17E510-2230-11F1-815D-FE6CB9572C2E
+Id: 573035C3-BEDE-4C1F-9F88-3FBD4E870973
 Updated: Tue, 17 Mar 2026 14:40:13 -0400
 Title: Auto resolve fields against ones following a different style/casing
 Description: It would be useful to have the ability for flexor to auto-resolve or infer fields, like:
@@ -33,19 +33,19 @@ Description: It would be useful to have the ability for flexor to auto-resolve o
 + Note that the behavior would be optional/opt-in
 Status: closed
 
-Id: 93EAD734-2233-11F1-B994-FE6CB9572C2E
+Id: 115686E8-6961-4B6C-9B2F-EB4DABD8A900
 Updated: Tue, 17 Mar 2026 15:00:34 -0400
 Title: Using F "alias" requires "require 'f'", which is undesirable
 Description: The requirement of requiring 'f' for usage of "F" is undesirable as it pollutes global namespace, and is not intuitive for users that install flexor as the name of the gem. That alias should be loaded automatically when user does `require 'flexor'`.
 Status: closed
 
-Id: 92EB55C0-2C51-11F1-8472-FE6CB9572C2D
+Id: 19A6A0B1-D762-45D3-95E9-32545E230126
 Updated: Mon, 30 Mar 2026 12:00:29 -0400
 Title: Add plugin to "compile" keys into real methods
 Description: Currently Flexor when used with IRB lacks good autocompletion. It would be beneficial to precompile the keys into methods such that they can be completed. There are also potential performance benefits to doing this. ActiveSupport::Configurable does something similar:
 Status: open
 
-Id: A8A0ABAE-2C51-11F1-BBBC-FE6CB9572C2D
+Id: 1FC0E609-B57F-45C3-9305-EB47601B259E
 Updated: Mon, 30 Mar 2026 12:01:05 -0400
 Title: ActiveSupport::Configurable example (tied to previous ticket):
 Description: 4 │ module ActiveSupport
@@ -55,11 +55,11 @@ Description: 4 │ module ActiveSupport
 +    8 │   module Configurable
 +    9 │     extend ActiveSupport::Concern
 +   10 │     class Configuration < ActiveSupport::InheritableOptions
-+   11 │       def compile_methods!
-+   12 │         self.class.compile_methods!(keys)
++   11 │       def compile_methods\\\\\\\\\\\\!
++   12 │         self.class.compile_methods\\\\\\\\\\\\!(keys)
 +   13 │       end
 +   14 │       # Compiles reader methods so we don't have to go through method_missing.
-+   15 │       def self.compile_methods!(keys)
++   15 │       def self.compile_methods\\\\\\\\\\\\!(keys)
 +   16 │         keys.reject { |m| method_defined?(m) }.each do |key|
 +   17 │           class_eval <<-RUBY, __FILE__, __LINE__ + 1
 +   18 │             def #{key}; _get(#{key.inspect}); end
@@ -69,7 +69,7 @@ Description: 4 │ module ActiveSupport
 +   22 │     end
 Status: open
 
-Id: 23AC92EE-35CC-11F1-AA9F-FE6CB9572C2F
+Id: 3B49DC55-C580-42C7-AB0D-08F0CB899B2D
 Updated: Sat, 11 Apr 2026 13:30:31 -0400
 Title: Create plugin to allow for the "?" method suffix
 Description: For example, when doing something like
@@ -96,7 +96,7 @@ Description: For example, when doing something like
 + ```
 Status: open
 
-Id: BAA28228-220B-11F1-88B7-FE6CB9572C2E
+Id: B0673B2E-A2A2-4FBE-BBF9-F41FA1CA3169
 Updated: Tue, 17 Mar 2026 10:15:19 -0400
 Title: Add constant F that is set equal to Flexor
 Description: As Flexor is built to maximize ergonomics, it would be ideal to have a shorter way to call it. In lib, there should be f.rb, where F = Flexor as the only line. It could be called like:
@@ -104,13 +104,13 @@ Description: As Flexor is built to maximize ergonomics, it would be ideal to hav
 + 
 Status: closed
 
-Id: A4C9FDF4-2220-11F1-BED9-FE6CB9572C2E
+Id: 9938B05E-15F6-402B-AF42-7046D5B5F671
 Updated: Tue, 17 Mar 2026 12:45:02 -0400
 Title: Address rubocop offenses
 Description: Currently 30 violations as I write this
 Status: closed
 
-Id: BC17E510-2230-11F1-815D-FE6CB9572C2E
+Id: 4BAD9D04-F360-4859-8454-B40CB80F0F85
 Updated: Tue, 17 Mar 2026 14:40:13 -0400
 Title: Auto resolve fields against ones following a different style/casing
 Description: It would be useful to have the ability for flexor to auto-resolve or infer fields, like:
@@ -120,13 +120,13 @@ Description: It would be useful to have the ability for flexor to auto-resolve o
 + Note that the behavior would be optional/opt-in
 Status: closed
 
-Id: 93EAD734-2233-11F1-B994-FE6CB9572C2E
+Id: B85383C2-5142-464F-81CF-7938445411E1
 Updated: Tue, 17 Mar 2026 15:00:34 -0400
 Title: Using F "alias" requires "require 'f'", which is undesirable
 Description: The requirement of requiring 'f' for usage of "F" is undesirable as it pollutes global namespace, and is not intuitive for users that install flexor as the name of the gem. That alias should be loaded automatically when user does `require 'flexor'`.
 Status: closed
 
-Id: 2FCAE808-2598-11F1-B405-FE6CB9572C2E
+Id: 67833956-1397-4820-887B-60EE975CDF46
 Updated: Sat, 21 Mar 2026 22:38:19 -0400
 Title: Perform spike around IRB autocompletions
 Description: IRB autocompletions are incredibly useful, but flexor only exposes its own internal methods, rather than the fields for autocompletions. Some thoughts:
