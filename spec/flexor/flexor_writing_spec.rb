@@ -56,14 +56,12 @@ RSpec.describe Flexor do
     context "when the level 1 property has not been set" do
       subject { described_class.new }
 
-      it "vivifies the level 1 property" do
-        subject[:rank][:first] = 1
-        expect(subject[:rank]).to be_a described_class
-        expect(subject[:rank]).not_to be_nil
+      it "raises NoMethodError when writing through an unset bracket" do
+        expect { subject[:rank][:first] = 1 }.to raise_error(NoMethodError)
       end
 
-      it "writes and reads the written property" do
-        subject[:rank][:first] = 1
+      it "supports method-style vivification followed by bracket write" do
+        subject.rank[:first] = 1
         expect(subject[:rank][:first]).to eq 1
       end
     end
