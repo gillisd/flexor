@@ -135,3 +135,35 @@ Description: IRB autocompletions are incredibly useful, but flexor only exposes 
 + 3. Either which way, the plugin system allows us to isolate this behvior and only trigger it when IRB is active
 Status: open
 
+Id: 3ED3C15C-4051-11F1-9F71-FE6CB9572C2F
+Updated: Fri, 24 Apr 2026 22:48:31 -0400
+Title: Conflicting nil behavior between ||=, implicit nil, and ".nil?"
+Description: #Write a spec/test for the following example:
++ ```ruby
++ context 'when flexor has no key set' do
++   describe 'setting via ||=' do
++     it 'sets the attribute' do
++       f = Flexor.new
++       f[:foo] ||= :bar
++       expect(f.foo).to eq(:bar)
++     end
++   end
++ 
++   describe 'setting via implicit nil OR' do
++     it 'correctly sets the attribute' do
++       f = Flexor.new
++       f[:foo] || f[:foo] = :bar
++       expect(f.foo).to eq(:bar)
++     end
++   end
++ 
++   describe 'setting via nil? OR' do
++     it 'correctly sets the attribute' do
++       f = Flexor.new
++       f[:foo].nil? || f[:foo] = :bar
++       expect(f.foo).to eq(:bar)
++     end
++   end
++ end
++ ```
+Status: open
