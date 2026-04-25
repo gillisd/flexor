@@ -5,15 +5,7 @@ class Flexor
     private
 
     def vivify(hash)
-      new_hash = Hash.new do |h, key|
-        h[key] = self.class.new({}, root: false)
-      end
-
-      hash.each do |key, value|
-        new_hash[key] = vivify_value(value)
-      end
-
-      new_hash
+      hash.transform_values { |value| vivify_value(value) }
     end
 
     def vivify_value(value)

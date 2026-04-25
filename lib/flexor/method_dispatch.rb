@@ -27,7 +27,9 @@ class Flexor
 
     def read_via_method(name)
       cache_getter(name) if !frozen? && @store.key?(name)
-      self[name]
+      return @store[name] if @store.key?(name)
+
+      @store[name] = self.class.new({}, root: false)
     end
 
     def cache_setter(name, key)
