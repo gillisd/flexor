@@ -136,7 +136,7 @@ Description: IRB autocompletions are incredibly useful, but flexor only exposes 
 Status: open
 
 Id: 3ED3C15C-4051-11F1-9F71-FE6CB9572C2F
-Updated: Fri, 24 Apr 2026 22:48:31 -0400
+Updated: Sat, 25 Apr 2026 14:46:54 -0400
 Title: Conflicting nil behavior between ||=, implicit nil, and ".nil?"
 Description: #Write a spec/test for the following example:
 + ```ruby
@@ -166,4 +166,4 @@ Description: #Write a spec/test for the following example:
 +   end
 + end
 + ```
-Status: open
+Status: closed
