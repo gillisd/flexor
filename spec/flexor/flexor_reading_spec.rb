@@ -41,20 +41,17 @@ RSpec.describe Flexor do
     context "when the property does not exist" do
       subject { described_class.new({}) }
 
-      it "returns a value where nil? is true" do
-        expect(subject[:foo]).to be_nil
+      it "returns the nil singleton" do
+        expect(subject[:foo]).to equal nil
       end
 
-      it "returns a value that == nil" do
+      it "satisfies be_nil and responds true to nil?" do
+        expect(subject[:foo]).to be_nil
         expect(subject[:foo].nil?).to be true
       end
 
-      it "does not return the nil singleton" do
-        expect(subject[:foo]).not_to equal nil
-      end
-
-      it "returns a Flexor" do
-        expect(subject[:foo]).to be_a described_class
+      it "is not a Flexor instance" do
+        expect(subject[:foo]).not_to be_a described_class
       end
     end
   end
@@ -111,14 +108,12 @@ RSpec.describe Flexor do
     context "when the level 1 property does not exist" do
       subject { described_class.new({}) }
 
-      it "returns a value where nil? is true" do
-        expect(subject[:missing][:also_missing]).to be_nil
+      it "returns nil at level 1" do
+        expect(subject[:missing]).to be_nil
       end
 
-      it "the returned value is itself a Flexor that supports further chaining" do
-        result = subject[:missing]
-        expect(result).to be_a described_class
-        expect(result[:deeper][:still]).to be_nil
+      it "raises NoMethodError when chaining brackets through a missing key" do
+        expect { subject[:missing][:also_missing] }.to raise_error(NoMethodError)
       end
     end
   end
