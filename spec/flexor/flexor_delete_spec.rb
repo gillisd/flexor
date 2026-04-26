@@ -24,6 +24,14 @@ RSpec.describe Flexor do
       store.delete(:b)
       expect(store.to_h).to eq({ a: 1, c: 3 })
     end
+
+    it "can reassign after accessing then deleting" do
+      store = described_class.new({ user: { name: "alice" } })
+      name = store.user.name
+      store.delete(:user)
+      store.user.name = name
+      expect(store.user.name).to eq("alice")
+    end
   end
 
   describe "#clear" do
