@@ -47,5 +47,16 @@ class Flexor
         @store[key]
       end
     end
+
+    def uncache_method(name)
+      uncache_singleton(name)
+      uncache_singleton(:"#{name}=")
+    end
+
+    def uncache_singleton(name)
+      return unless singleton_class.method_defined?(name, false)
+
+      singleton_class.send(:remove_method, name)
+    end
   end
 end

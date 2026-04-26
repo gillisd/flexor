@@ -151,6 +151,14 @@ RSpec.describe Flexor do
       store.fooBar
       expect(store.fooBar).to eq "qux"
     end
+
+    it "invalidates the cached camelCase getter when its snake_case storage key is deleted" do
+      store = described_class.new({ user_name: { nickname: "alice" } })
+      store.userName.nickname
+      store.delete(:user_name)
+      store.userName.nickname = "bob"
+      expect(store.userName.nickname).to eq("bob")
+    end
   end
 
   describe "flex_keys edge cases" do

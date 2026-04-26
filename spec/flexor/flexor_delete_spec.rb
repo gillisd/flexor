@@ -60,5 +60,13 @@ RSpec.describe Flexor do
       expect(store.new_key).to eq "fresh"
       expect(store.key?(:old)).to be false
     end
+
+    it "can reassign a previously-accessed key after clearing" do
+      store = described_class.new({ user: { name: "alice" } })
+      name = store.user.name
+      store.clear
+      store.user.name = name
+      expect(store.user.name).to eq("alice")
+    end
   end
 end

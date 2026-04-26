@@ -38,6 +38,12 @@ class Flexor
           end
         end
 
+        def uncache_method(name)
+          super
+          alt = CaseConversion.case_counterpart(name)
+          super(alt) if alt
+        end
+
         private
 
         def resolve_flex_key(key)

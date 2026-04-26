@@ -42,10 +42,12 @@ class Flexor
         end
 
         def delete(key)
+          uncache_method(key)
           @store.delete(key)
         end
 
         def clear
+          @store.each_key { |key| uncache_method(key) }
           @store.clear
           self
         end
