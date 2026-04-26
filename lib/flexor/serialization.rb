@@ -18,13 +18,18 @@ class Flexor
 
     def init_with(coder)
       @root = coder["root"]
-      @store = vivify(symbolize_keys(coder["store"] || {}))
+
+      @store = coder.then { it["store"] || {} }
+                    .then { symbolize_keys it }
+                    .then { vivify it }
     end
 
     private
 
     def symbolize_keys(hash)
-      hash.transform_keys(&:to_sym).transform_values do |v|
+      hash
+        .transform_keys(&:to_sym)
+        .transform_values do |v|
         v.is_a?(Hash) ? symbolize_keys(v) : v
       end
     end
