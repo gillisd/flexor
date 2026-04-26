@@ -167,3 +167,17 @@ Description: #Write a spec/test for the following example:
 + end
 + ```
 Status: open
+
+Id: 86B389D2-41A8-11F1-89B0-FE6CB9572C2F
+Updated: Sun, 26 Apr 2026 15:45:49 -0400
+Title: 'Coerce' error when using sum
+Description: Running this code raised the error below it:
++ 
++ ```ruby
++ f.records.map(&:delta_revenue).map(&:to_f).sum
++ ```
++ /Users/davidgillis/.rbenv/versions/4.0.1/lib/ruby/gems/4.0.0/gems/flexor-0.1.2/lib/flexor/method_dispatch.rb:18:in "Flexor::MethodDispatch#method_missing": undefined method "coerce" for an instance of Flexor (NoMethodError)
++ 
++ Regardless, this error looks like an internal bug and should be invisible to the user
++ 
+Status: open
