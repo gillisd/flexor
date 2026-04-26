@@ -1,5 +1,5 @@
 RSpec.describe Flexor do
-  shared_examples "an operator that assigns to a bracket-accessed key" do |operation|
+  shared_examples "an operator that assigns to a bracket-accessed key" do
     context "when the key is unset" do
       let(:flexor) { described_class.new }
 
@@ -26,17 +26,20 @@ RSpec.describe Flexor do
   end
 
   describe "f[:foo] ||= :bar" do
-    it_behaves_like "an operator that assigns to a bracket-accessed key",
-                    ->(f) { f[:foo] ||= :bar }
+    it_behaves_like "an operator that assigns to a bracket-accessed key" do
+      let(:operation) { ->(f) { f[:foo] ||= :bar } }
+    end
   end
 
   describe "f[:foo] || (f[:foo] = :bar)" do
-    it_behaves_like "an operator that assigns to a bracket-accessed key",
-                    ->(f) { f[:foo] || f[:foo] = :bar }
+    it_behaves_like "an operator that assigns to a bracket-accessed key" do
+      let(:operation) { ->(f) { f[:foo] || f[:foo] = :bar } }
+    end
   end
 
   describe "f[:foo].nil? && (f[:foo] = :bar)" do
-    it_behaves_like "an operator that assigns to a bracket-accessed key",
-                    ->(f) { f[:foo].nil? && f[:foo] = :bar }
+    it_behaves_like "an operator that assigns to a bracket-accessed key" do
+      let(:operation) { ->(f) { f[:foo].nil? && f[:foo] = :bar } }
+    end
   end
 end
