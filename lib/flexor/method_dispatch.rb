@@ -40,6 +40,12 @@ class Flexor
       end
     end
 
+    ##
+    # Caches a singleton getter that returns the raw store value, NOT
+    # +self[key]+. Method-style access intentionally preserves chainable
+    # phantom Flexors so +f.a.b.c = 1+ keeps working; bracket access
+    # (+Core#[]+) is the path that filters phantoms to +nil+. See the
+    # "bracket-nil contract" section of README.md.
     def cache_getter(name, key = name)
       define_singleton_method(name) do |*a, &blk|
         raise NoMethodError, "undefined method '#{name}' for #{inspect}" if blk || !a.empty?
