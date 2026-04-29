@@ -34,7 +34,7 @@ class Flexor
 
           keys.each_with_object({}) do |key, hash|
             resolved = resolve_flex_key(key)
-            hash[key] = @store[resolved] if @store.key?(resolved)
+            hash[key] = self[resolved] if @store.key?(resolved)
           end
         end
 

@@ -100,9 +100,24 @@ RSpec.describe Flexor do
       end
     end
 
-    it "returns raw store when keys is nil" do
+    it "includes all stored keys when keys is nil" do
       store = described_class.new({ fooBar: "baz" })
       expect(store.deconstruct_keys(nil)).to have_key(:fooBar)
+    end
+
+    it "binds an alternate-case phantom key to literal nil under case/in" do
+      store = described_class.new({ realKey: "x" })
+      _ = store.phantom_key
+      store => { phantom_key:, real_key: }
+      expect(phantom_key).to equal nil
+      expect(real_key).to eq "x"
+    end
+
+    it "yields literal nil for an alternate-case phantom when explicit keys are requested" do
+      store = described_class.new
+      _ = store.fooBar
+      result = store.deconstruct_keys([:foo_bar])
+      expect(result[:foo_bar]).to equal nil
     end
   end
 

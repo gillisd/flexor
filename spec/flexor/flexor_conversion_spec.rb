@@ -242,7 +242,7 @@ RSpec.describe Flexor do
     context "with no keys requested" do
       subject { described_class.new({ a: 1, b: 2 }) }
 
-      it "returns the entire store" do
+      it "returns every stored key" do
         result = subject.deconstruct_keys(nil)
         expect(result.keys).to include(:a, :b)
       end
@@ -254,6 +254,37 @@ RSpec.describe Flexor do
       it "returns an empty hash" do
         result = subject.deconstruct_keys(nil)
         expect(result).to eq({})
+      end
+    end
+
+    context "when a method touch has materialized an empty child" do
+      subject do
+        store = described_class.new({ real: "data" })
+        _ = store.phantom
+        store
+      end
+
+      it "binds the phantom key to literal nil under case/in" do
+        case subject
+        in { phantom: phantom, real: real }
+          expect(phantom).to equal nil
+          expect(real).to eq "data"
+        end
+      end
+
+      it "yields literal nil for the phantom key when keys are requested" do
+        result = subject.deconstruct_keys([:phantom])
+        expect(result[:phantom]).to equal nil
+      end
+
+      it "binds the phantom value to literal nil when keys is nil" do
+        result = subject.deconstruct_keys(nil)
+        expect(result[:phantom]).to equal nil
+        expect(result[:real]).to eq "data"
+      end
+
+      it "diverges from to_h, which omits the phantom" do
+        expect(subject.to_h).to eq({ real: "data" })
       end
     end
   end
