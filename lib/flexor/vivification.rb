@@ -2,10 +2,10 @@ class Flexor
   ##
   # Methods for recursively converting raw Hashes and Arrays into Flexor objects.
   module Vivification
-    FLOAT = /[0-9\.\-]+/
-    INTEGER = /^(?<!0)[0-9\-]+/
+    FLOAT = /[0-9.-]+/
+    INTEGER = /^(?<!0)[0-9-]+/
     DATELIKE = /^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}/
- 
+
     private
 
     def vivify(hash)
@@ -27,7 +27,7 @@ class Flexor
       in INTEGER then value.to_i
       in FLOAT then value.to_f
       in DATELIKE
-        require 'datetime'
+        require "datetime"
         DateTime.parse(it)
       else value
       end
