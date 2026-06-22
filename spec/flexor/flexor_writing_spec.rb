@@ -148,6 +148,20 @@ RSpec.describe Flexor do
     end
   end
 
+  describe "assigning a string value that resembles a number" do
+    subject { described_class.new }
+
+    it "preserves the string via the method setter" do
+      subject.address = "123 Main Street"
+      expect(subject.address).to eq "123 Main Street"
+    end
+
+    it "preserves the string via the hash accessor" do
+      subject[:address] = "123 Main Street"
+      expect(subject[:address]).to eq "123 Main Street"
+    end
+  end
+
   describe "#set_raw" do
     subject { described_class.new }
 
