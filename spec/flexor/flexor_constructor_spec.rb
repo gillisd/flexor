@@ -104,6 +104,48 @@ RSpec.describe Flexor do
       end
     end
 
+    context "with string values that resemble numbers or dates" do
+      it "preserves a string of digits as a string" do
+        store = described_class.new({ zip: "10001" })
+        expect(store.zip).to eq "10001"
+      end
+
+      it "preserves a leading-zero string without stripping the zeroes" do
+        store = described_class.new({ zip: "01970" })
+        expect(store.zip).to eq "01970"
+      end
+
+      it "preserves a currency string instead of zeroing it" do
+        store = described_class.new({ price: "$19.99" })
+        expect(store.price).to eq "$19.99"
+      end
+
+      it "preserves a string that merely begins with digits" do
+        store = described_class.new({ address: "123 Main Street" })
+        expect(store.address).to eq "123 Main Street"
+      end
+
+      it "preserves prose that happens to contain a number" do
+        store = described_class.new({ note: "call me at 3pm" })
+        expect(store.note).to eq "call me at 3pm"
+      end
+
+      it "preserves a hyphenated identifier" do
+        store = described_class.new({ phone: "555-1234" })
+        expect(store.phone).to eq "555-1234"
+      end
+
+      it "preserves a decimal-looking string" do
+        store = described_class.new({ version: "1.2.3" })
+        expect(store.version).to eq "1.2.3"
+      end
+
+      it "preserves an ISO-8601 timestamp string" do
+        store = described_class.new({ recorded_at: "2023-01-15T10:30:00" })
+        expect(store.recorded_at).to eq "2023-01-15T10:30:00"
+      end
+    end
+
     context "with a non-hash argument" do
       it "raises ArgumentError for strings" do
         expect { described_class.new("string") }.to raise_error(ArgumentError)
