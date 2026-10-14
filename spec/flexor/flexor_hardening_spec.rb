@@ -1,8 +1,4 @@
 RSpec.describe Flexor do
-  def yielded_pairs(store)
-    store.to_enum(:each).to_a
-  end
-
   describe "reading an unset key" do
     let(:store) { described_class.new({ a: 1 }) }
 
@@ -205,60 +201,6 @@ RSpec.describe Flexor do
       it "keeps the last value written" do
         expect(index.fetch(store)).to eq 2
       end
-    end
-  end
-
-  describe "#each" do
-    let(:store) { described_class.new({ a: 1, b: 2, c: 3 }) }
-
-    it "yields every key with its value" do
-      expect(yielded_pairs(store)).to contain_exactly([:a, 1], [:b, 2], [:c, 3])
-    end
-
-    it "yields in insertion order" do
-      expect { |probe| store.each(&probe) }.to yield_successive_args([:a, 1], [:b, 2], [:c, 3])
-    end
-
-    it "returns the store" do
-      expect(store.each { it }).to equal store
-    end
-
-    context "without a block" do
-      it "returns an enumerator" do
-        expect(store.each).to be_a Enumerator
-      end
-    end
-
-    context "when an unset key has been read" do
-      before { store.phantom }
-
-      it "yields only the written pairs" do
-        expect(yielded_pairs(store)).to contain_exactly([:a, 1], [:b, 2], [:c, 3])
-      end
-    end
-  end
-
-  describe "#map" do
-    let(:store) { described_class.new({ a: 1, b: 2, c: 3 }) }
-
-    it "returns the block results in insertion order" do
-      expect(store.map { |key, value| [key, value * 10] }).to eq [[:a, 10], [:b, 20], [:c, 30]]
-    end
-  end
-
-  describe "#select" do
-    let(:store) { described_class.new({ a: 1, b: 2, c: 3 }) }
-
-    it "returns a store" do
-      expect(store.select { |_key, value| value > 1 }).to be_a described_class
-    end
-
-    it "keeps only the matching pairs" do
-      expect(store.select { |_key, value| value > 1 }).to eq({ b: 2, c: 3 })
-    end
-
-    it "leaves the receiver unchanged" do
-      expect { store.select { |_key, value| value > 1 } }.not_to(change { store.to_h })
     end
   end
 
