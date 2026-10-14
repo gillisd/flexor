@@ -1,151 +1,325 @@
 RSpec.describe Flexor do
+  def yielded_pairs(store)
+    store.to_enum(:each).to_a
+  end
+
   describe "reading an unset key" do
-    it "returns a nil-like child"
-    it "leaves the key list unchanged"
-    it "leaves the size unchanged"
-    it "reports the key as absent"
-    it "leaves the deconstructed values unchanged"
-    it "leaves the hash conversion unchanged"
+    let(:store) { described_class.new({ a: 1 }) }
+
+    it "returns a nil-like child" do
+      expect(store.phantom.nil?).to be true
+    end
+
+    it "leaves the key list unchanged" do
+      expect { store.phantom }.not_to(change { store.keys })
+    end
+
+    it "leaves the size unchanged" do
+      expect { store.phantom }.not_to(change { store.size })
+    end
+
+    it "reports the key as absent" do
+      store.phantom
+      expect(store.key?(:phantom)).to be false
+    end
+
+    it "leaves the deconstructed values unchanged" do
+      expect { store.phantom }.not_to(change { store.deconstruct })
+    end
+
+    it "leaves the hash conversion unchanged" do
+      expect { store.phantom }.not_to(change { store.to_h })
+    end
 
     context "with a chain of unset keys" do
-      it "leaves the key list unchanged"
-      it "returns a nil-like child at every depth"
+      it "leaves the key list unchanged" do
+        expect { store.phantom.deep.chain }.not_to(change { store.keys })
+      end
+
+      it "returns a nil-like child at every depth" do
+        phantom = store.phantom
+        deep = phantom.deep
+        expect([phantom, deep, deep.chain].map(&:nil?)).to all(be true)
+      end
     end
 
     context "when the unset child is written" do
-      it "attaches the child to its parent"
-      it "adds the key to the key list"
-      it "exposes the written value through the parent"
+      let(:child) { store.phantom }
+
+      it "attaches the child to its parent" do
+        child.x = 1
+        expect(store[:phantom]).to equal child
+      end
+
+      it "adds the key to the key list" do
+        expect { child.x = 1 }.to(change { store.keys }.from([:a]).to([:a, :phantom]))
+      end
+
+      it "exposes the written value through the parent" do
+        child.x = 1
+        expect(store.phantom.x).to eq 1
+      end
     end
 
     context "when the end of an unset chain is written" do
-      it "attaches every intermediate child"
-      it "renders the full path in the hash conversion"
+      before { store.p.q.r = 1 }
+
+      it "attaches every intermediate child" do
+        expect([store.key?(:p), store.p.key?(:q), store.p.q.key?(:r)]).to all(be true)
+      end
+
+      it "renders the full path in the hash conversion" do
+        expect(store.to_h).to eq({ a: 1, p: { q: { r: 1 } } })
+      end
     end
 
     context "when two separate reads of one unset key are each written" do
-      it "keeps the first write"
-      it "keeps the second write"
+      let(:first_read) { store.k }
+      let(:second_read) { store.k }
+
+      before do
+        first_read.x = 1
+        second_read.y = 2
+      end
+
+      it "keeps the first write" do
+        expect(store.k.x).to eq 1
+      end
+
+      it "keeps the second write" do
+        expect(store.k.y).to eq 2
+      end
     end
 
     context "when the parent is frozen" do
-      it "returns a nil-like child"
-      it "raises no error"
+      before { store.freeze }
+
+      it "returns a nil-like child" do
+        expect(store.phantom.nil?).to be true
+      end
+
+      it "raises no error" do
+        expect { store.phantom }.not_to raise_error
+      end
 
       context "when the unset child is written" do
-        it "raises a frozen error"
+        it "raises a frozen error" do
+          expect { store.phantom.x = 1 }.to raise_error(FrozenError)
+        end
       end
     end
   end
 
   describe "#eql?" do
+    let(:store) { described_class.new({ x: 1 }) }
+
     context "with a store holding equal contents" do
-      it "treats the stores as equal"
+      let(:twin) { described_class.new({ x: 1 }) }
+
+      it "treats the stores as equal" do
+        expect(store).to eql twin
+      end
     end
 
     context "with a store holding different contents" do
-      it "treats the stores as distinct"
+      let(:other) { described_class.new({ x: 2 }) }
+
+      it "treats the stores as distinct" do
+        expect(store).not_to eql other
+      end
     end
 
     context "with nested stores holding equal contents" do
-      it "treats the nested stores as equal"
+      let(:store) { described_class.new({ x: { y: 1 } }) }
+      let(:twin) { described_class.new({ x: { y: 1 } }) }
+
+      it "treats the nested stores as equal" do
+        expect(store).to eql twin
+      end
     end
 
     context "with a plain hash holding equal contents" do
-      it "treats the hash as distinct"
+      it "treats the hash as distinct" do
+        expect(store).not_to eql({ x: 1 })
+      end
     end
   end
 
   describe "#==" do
     context "with a plain hash holding equal contents" do
-      it "treats the hash as equal"
+      it "treats the hash as equal" do
+        expect(described_class.new({ x: 1 })).to eq({ x: 1 })
+      end
     end
   end
 
   describe "#hash" do
+    let(:store) { described_class.new({ x: 1 }) }
+
     context "with stores holding equal contents" do
-      it "returns the same value"
+      let(:twin) { described_class.new({ x: 1 }) }
+
+      it "returns the same value" do
+        expect(store.hash).to eq twin.hash
+      end
     end
 
     context "with stores holding different contents" do
-      it "returns different values"
+      let(:other) { described_class.new({ x: 2 }) }
+
+      it "returns different values" do
+        expect(store.hash).not_to eq other.hash
+      end
     end
 
     context "when an unset key has been read" do
-      it "keeps its value"
+      it "keeps its value" do
+        expect { store.phantom }.not_to(change { store.hash })
+      end
     end
 
     context "when a key is written" do
-      it "changes its value"
+      it "changes its value" do
+        expect { store.y = 2 }.to(change { store.hash })
+      end
     end
   end
 
   describe "membership in collections" do
+    let(:store) { described_class.new({ x: 1 }) }
+    let(:twin) { described_class.new({ x: 1 }) }
+
     context "with equal stores in an array" do
-      it "collapses them under deduplication"
+      it "collapses them under deduplication" do
+        expect([store, twin].uniq.size).to eq 1
+      end
     end
 
     context "with equal stores as hash keys" do
-      it "resolves them to one entry"
-      it "keeps the last value written"
+      let(:index) { { store => 1, twin => 2 } }
+
+      it "resolves them to one entry" do
+        expect(index.size).to eq 1
+      end
+
+      it "keeps the last value written" do
+        expect(index.fetch(store)).to eq 2
+      end
     end
   end
 
   describe "#each" do
-    it "yields every key with its value"
-    it "yields in insertion order"
-    it "returns the store"
+    let(:store) { described_class.new({ a: 1, b: 2, c: 3 }) }
+
+    it "yields every key with its value" do
+      expect(yielded_pairs(store)).to contain_exactly([:a, 1], [:b, 2], [:c, 3])
+    end
+
+    it "yields in insertion order" do
+      expect { |probe| store.each(&probe) }.to yield_successive_args([:a, 1], [:b, 2], [:c, 3])
+    end
+
+    it "returns the store" do
+      expect(store.each { it }).to equal store
+    end
 
     context "without a block" do
-      it "returns an enumerator"
+      it "returns an enumerator" do
+        expect(store.each).to be_a Enumerator
+      end
     end
 
     context "when an unset key has been read" do
-      it "yields only the written pairs"
+      before { store.phantom }
+
+      it "yields only the written pairs" do
+        expect(yielded_pairs(store)).to contain_exactly([:a, 1], [:b, 2], [:c, 3])
+      end
     end
   end
 
   describe "#map" do
-    it "returns the block results in insertion order"
+    let(:store) { described_class.new({ a: 1, b: 2, c: 3 }) }
+
+    it "returns the block results in insertion order" do
+      expect(store.map { |key, value| [key, value * 10] }).to eq [[:a, 10], [:b, 20], [:c, 30]]
+    end
   end
 
   describe "#select" do
-    it "returns the matching pairs in an array"
+    let(:store) { described_class.new({ a: 1, b: 2, c: 3 }) }
+
+    it "returns the matching pairs in an array" do
+      expect(store.select { |_key, value| value > 1 }).to eq [[:b, 2], [:c, 3]]
+    end
   end
 
   describe "#respond_to?" do
+    let(:store) { described_class.new({ fooBar: 1 }) }
+
     context "with a stored key" do
-      it "reports the reader as available"
+      it "reports the reader as available" do
+        expect(store).to respond_to(:fooBar)
+      end
     end
 
     context "with the alternate case of a stored key" do
-      it "reports the alternate reader as available"
+      it "reports the alternate reader as available" do
+        expect(store).to respond_to(:foo_bar)
+      end
     end
 
     context "with an unset key" do
-      it "reports the reader as unavailable"
-      it "still answers a method read with a nil-like child"
+      it "reports the reader as unavailable" do
+        expect(store).not_to respond_to(:missing)
+      end
+
+      it "still answers a method read with a nil-like child" do
+        expect(store.missing.nil?).to be true
+      end
     end
 
     context "with a setter name" do
-      it "reports the writer as available"
+      it "reports the writer as available" do
+        expect(store).to respond_to(:anything=)
+      end
     end
 
     context "when the store is frozen" do
+      before { store.freeze }
+
       context "with a setter name" do
-        it "reports the writer as unavailable"
+        it "reports the writer as unavailable" do
+          expect(store).not_to respond_to(:anything=)
+        end
       end
     end
   end
 
   describe "a field named like a built-in method" do
-    it "answers the method call with the built-in behavior"
-    it "answers a bracket read with the stored value"
-    it "renders the field in the hash conversion"
-    it "exposes the field to pattern matching"
+    let(:store) { described_class.new({ size: 99 }) }
+
+    it "answers the method call with the built-in behavior" do
+      expect(store.size).to eq 1
+    end
+
+    it "answers a bracket read with the stored value" do
+      expect(store[:size]).to eq 99
+    end
+
+    it "renders the field in the hash conversion" do
+      expect(store.to_h).to eq({ size: 99 })
+    end
+
+    it "exposes the field to pattern matching" do
+      store => { size: }
+      expect(size).to eq 99
+    end
 
     context "when the shadowed key is written through brackets" do
-      it "stores the value under the shadowed key"
+      it "stores the value under the shadowed key" do
+        expect { store[:size] = 5 }.to(change { store[:size] }.from(99).to(5))
+      end
     end
   end
 end
