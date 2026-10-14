@@ -249,8 +249,16 @@ RSpec.describe Flexor do
   describe "#select" do
     let(:store) { described_class.new({ a: 1, b: 2, c: 3 }) }
 
-    it "returns the matching pairs in an array" do
-      expect(store.select { |_key, value| value > 1 }).to eq [[:b, 2], [:c, 3]]
+    it "returns a store" do
+      expect(store.select { |_key, value| value > 1 }).to be_a described_class
+    end
+
+    it "keeps only the matching pairs" do
+      expect(store.select { |_key, value| value > 1 }).to eq({ b: 2, c: 3 })
+    end
+
+    it "leaves the receiver unchanged" do
+      expect { store.select { |_key, value| value > 1 } }.not_to(change { store.to_h })
     end
   end
 
